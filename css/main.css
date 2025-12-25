@@ -1,0 +1,14 @@
+* {
+  font-family: Prompt;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#target {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
