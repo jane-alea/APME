@@ -11,3 +11,6 @@ This will be a modal editor; tools will include simple regular place/break, fill
 
 ## Is this official?
 No. However, the Protox developers are aware of its existence.
+
+## Contact
+DM alea, `networklagenjoyer` on Discord if you have any inquiries regarding APME.
