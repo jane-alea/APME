@@ -38,7 +38,7 @@ resize();
 
 const controls = new CameraControls(camera, canvas);
 
-const testChunk = new Chunk16(() => 50);
+const testChunk = new Chunk16(() => Math.round(Math.random() * 104));
 const geo = makeChunkMesh(testChunk, {});
 const mat = new THREE.MeshBasicMaterial({ side: THREE.FrontSide });
 const loader = new THREE.TextureLoader();
