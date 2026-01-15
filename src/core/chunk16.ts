@@ -10,4 +10,8 @@ export class Chunk16<T> {
   index(x: number, y: number, z: number): number {
     return (x << 8) | (y << 4) | z;
   }
+
+  getBlock(x: number, y: number, z: number): T {
+    return this.array[this.index(x, y, z)]!;
+  }
 }

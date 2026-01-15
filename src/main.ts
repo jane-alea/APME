@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { CameraControls } from "./ui/camera-controls.js";
+import { Chunk16 } from "./core/chunk16.js";
+import { makeChunkMesh } from "./geometry/mesher.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
 
@@ -13,12 +15,13 @@ const camera = new THREE.PerspectiveCamera(
   256
 );
 
-const cubeMesh = new THREE.BoxGeometry(1, 1, 1);
+const cubeMesh = new THREE.BoxGeometry(16, 16, 16);
 const cubeMat = new THREE.MeshBasicMaterial({
   wireframe: true,
   color: 0xff0000,
 });
 const cube = new THREE.Mesh(cubeMesh, cubeMat);
+cube.position.set(8, 8, 8);
 scene.add(cube);
 
 function resize() {
@@ -34,6 +37,20 @@ addEventListener("resize", resize);
 resize();
 
 const controls = new CameraControls(camera, canvas);
+
+const testChunk = new Chunk16(() => 50);
+const geo = makeChunkMesh(testChunk, {});
+const mat = new THREE.MeshBasicMaterial({ side: THREE.FrontSide });
+const loader = new THREE.TextureLoader();
+loader.loadAsync("assets/texture.png").then((tex) => {
+  tex.minFilter = THREE.NearestFilter;
+  tex.magFilter = THREE.NearestFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const newMat = new THREE.MeshBasicMaterial({ map: tex, alphaTest: 0.5 });
+  obj.material = newMat;
+});
+const obj = new THREE.Mesh(geo, mat);
+scene.add(obj);
 
 let lastTime: number | undefined = undefined;
 function animate() {
