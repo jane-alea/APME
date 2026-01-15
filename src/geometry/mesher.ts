@@ -4,7 +4,7 @@ import { BufferGeometry, Float32BufferAttribute } from "three";
 
 type C = Chunk16<number>;
 
-function quadXP(
+function xp(
   vert: number[],
   uv: number[],
   x: number,
@@ -18,8 +18,92 @@ function quadXP(
   v1: number
 ) {
   vert.push(x, y0, z0, x, y1, z0, x, y1, z1, x, y0, z0, x, y1, z1, x, y0, z1);
+  uv.push(u1, v1, u1, v0, u0, v0, u1, v1, u0, v0, u0, v1);
+}
 
+function xm(
+  vert: number[],
+  uv: number[],
+  x: number,
+  y0: number,
+  y1: number,
+  z0: number,
+  z1: number,
+  u0: number,
+  u1: number,
+  v0: number,
+  v1: number
+) {
+  vert.push(x, y0, z0, x, y1, z1, x, y1, z0, x, y0, z0, x, y0, z1, x, y1, z1);
+  uv.push(u0, v1, u1, v0, u0, v0, u0, v1, u1, v1, u1, v0);
+}
+
+function ym(
+  vert: number[],
+  uv: number[],
+  x0: number,
+  x1: number,
+  y: number,
+  z0: number,
+  z1: number,
+  u0: number,
+  u1: number,
+  v0: number,
+  v1: number
+) {
+  vert.push(x0, y, z0, x1, y, z0, x1, y, z1, x0, y, z0, x1, y, z1, x0, y, z1);
   uv.push(u0, v1, u0, v0, u1, v0, u0, v1, u1, v0, u1, v1);
+}
+
+function yp(
+  vert: number[],
+  uv: number[],
+  x0: number,
+  x1: number,
+  y: number,
+  z0: number,
+  z1: number,
+  u0: number,
+  u1: number,
+  v0: number,
+  v1: number
+) {
+  vert.push(x0, y, z0, x1, y, z1, x1, y, z0, x0, y, z0, x0, y, z1, x1, y, z1);
+  uv.push(u0, v1, u1, v0, u0, v0, u0, v1, u1, v1, u1, v0);
+}
+
+function zp(
+  vert: number[],
+  uv: number[],
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  z: number,
+  u0: number,
+  u1: number,
+  v0: number,
+  v1: number
+) {
+  vert.push(x0, y0, z, x1, y0, z, x1, y1, z, x0, y0, z, x1, y1, z, x0, y1, z);
+  uv.push(u0, v1, u1, v1, u1, v0, u0, v1, u1, v0, u0, v0);
+}
+
+function zm(
+  vert: number[],
+  uv: number[],
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  z: number,
+  u0: number,
+  u1: number,
+  v0: number,
+  v1: number
+) {
+  vert.push(x0, y0, z, x1, y1, z, x1, y0, z, x0, y0, z, x0, y1, z, x1, y1, z);
+  uv.push(u1, v1, u0, v0, u0, v1, u1, v1, u1, v0, u0, v0);
 }
 
 interface ChunkLike {
@@ -120,7 +204,7 @@ export function makeChunkMesh(
         const uv = UVStore[id]!;
 
         if (id && !cg.getBlock(x + 1, y, z)) {
-          quadXP(
+          xp(
             vertices,
             uvs,
             x + 1,
@@ -132,6 +216,81 @@ export function makeChunkMesh(
             uv.xp.end.u,
             uv.xp.start.v,
             uv.xp.end.v
+          );
+        }
+        if (id && !cg.getBlock(x - 1, y, z)) {
+          xm(
+            vertices,
+            uvs,
+            x,
+            y,
+            y + 1,
+            z,
+            z + 1,
+            uv.xm.start.u,
+            uv.xm.end.u,
+            uv.xm.start.v,
+            uv.xm.end.v
+          );
+        }
+        if (id && !cg.getBlock(x, y, z + 1)) {
+          zp(
+            vertices,
+            uvs,
+            x,
+            x + 1,
+            y,
+            y + 1,
+            z + 1,
+            uv.zp.start.u,
+            uv.zp.end.u,
+            uv.zp.start.v,
+            uv.zp.end.v
+          );
+        }
+        if (id && !cg.getBlock(x, y, z - 1)) {
+          zm(
+            vertices,
+            uvs,
+            x,
+            x + 1,
+            y,
+            y + 1,
+            z,
+            uv.zm.start.u,
+            uv.zm.end.u,
+            uv.zm.start.v,
+            uv.zm.end.v
+          );
+        }
+        if (id && !cg.getBlock(x, y + 1, z)) {
+          yp(
+            vertices,
+            uvs,
+            x,
+            x + 1,
+            y + 1,
+            z,
+            z + 1,
+            uv.yp.start.u,
+            uv.yp.end.u,
+            uv.yp.start.v,
+            uv.yp.end.v
+          );
+        }
+        if (id && !cg.getBlock(x, y - 1, z)) {
+          ym(
+            vertices,
+            uvs,
+            x,
+            x + 1,
+            y,
+            z,
+            z + 1,
+            uv.ym.start.u,
+            uv.ym.end.u,
+            uv.ym.start.v,
+            uv.ym.end.v
           );
         }
       }
