@@ -11,6 +11,9 @@ const KEY_MAP: [string, string][] = [
   ["ShiftLeft", "accelerate"],
 ];
 
+const slowSpeed = 3;
+const fastSpeed = 40;
+
 export class CameraControls {
   position: Vector3;
   rotation: Vector2;
@@ -40,7 +43,8 @@ export class CameraControls {
       const forwardZ = Math.cos(this.rotation.y) * xCos;
 
       const mult =
-        (this.inputs.forward ? -1 : 1) * (this.inputs.accelerate ? 10 : 2);
+        (this.inputs.forward ? -1 : 1) *
+        (this.inputs.accelerate ? fastSpeed : slowSpeed);
 
       this.position.x += mult * forwardX * dt;
       this.position.y += mult * forwardY * dt;
@@ -51,7 +55,8 @@ export class CameraControls {
 
     if (!this.inputs.up !== !this.inputs.down) {
       const mult =
-        (this.inputs.down ? -1 : 1) * (this.inputs.accelerate ? 10 : 2);
+        (this.inputs.down ? -1 : 1) *
+        (this.inputs.accelerate ? fastSpeed : slowSpeed);
       this.position.y += mult * dt;
       positionChanged = true;
     }
@@ -61,7 +66,8 @@ export class CameraControls {
       const forwardZ = Math.cos(this.rotation.y - Math.PI / 2);
 
       const mult =
-        (this.inputs.left ? 1 : -1) * (this.inputs.accelerate ? 10 : 2);
+        (this.inputs.left ? 1 : -1) *
+        (this.inputs.accelerate ? fastSpeed : slowSpeed);
 
       this.position.x += mult * forwardX * dt;
       this.position.z += mult * forwardZ * dt;

@@ -11,7 +11,11 @@ export class Chunk16<T> {
     return (x << 8) | (y << 4) | z;
   }
 
-  getBlock(x: number, y: number, z: number): T {
+  setAt(x: number, y: number, z: number, value: T) {
+    this.array[this.index(x, y, z)] = value;
+  }
+
+  getAt(x: number, y: number, z: number): T {
     return this.array[this.index(x, y, z)]!;
   }
 }

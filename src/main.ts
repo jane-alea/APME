@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { CameraControls } from "./ui/camera-controls.js";
 import { Chunk16 } from "./core/chunk16.js";
 import { makeChunkMesh } from "./geometry/mesher.js";
+import { maps } from "./core/map.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
 
@@ -48,9 +49,27 @@ loader.loadAsync("assets/texture.png").then((tex) => {
   tex.colorSpace = THREE.SRGBColorSpace;
   const newMat = new THREE.MeshBasicMaterial({ map: tex, alphaTest: 0.5 });
   obj.material = newMat;
+  fetch("assets/map.txt").then((resp) =>
+    resp.json().then((data) => {
+      const map = maps.load(data).value!;
+      for (let x = 0; x < 16; x++) {
+        for (let y = 0; y < 16; y++) {
+          for (let z = 0; z < 16; z++) {
+            const ch = map.getAt(x, y, z);
+            if (ch) {
+              const geom = makeChunkMesh(ch, {});
+              const mesh = new THREE.Mesh(geom, newMat);
+              mesh.position.set(x * 16, y * 16, z * 16);
+              scene.add(mesh);
+            }
+          }
+        }
+      }
+    })
+  );
 });
 const obj = new THREE.Mesh(geo, mat);
-scene.add(obj);
+// scene.add(obj);
 
 let lastTime: number | undefined = undefined;
 function animate() {

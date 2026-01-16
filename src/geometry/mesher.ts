@@ -107,13 +107,13 @@ function zm(
 }
 
 interface ChunkLike {
-  getBlock(x: number, y: number, z: number): number;
+  getAt(x: number, y: number, z: number): number;
 }
 
 class FakeChunk implements ChunkLike {
   static instance = new FakeChunk();
 
-  getBlock(x: number, y: number, z: number): number {
+  getAt(x: number, y: number, z: number): number {
     return 0;
   }
 }
@@ -170,14 +170,14 @@ class ChunkGroup {
     ];
   }
 
-  getBlock(x: number, y: number, z: number): number {
+  getAt(x: number, y: number, z: number): number {
     const a = x + 16,
       b = y + 16,
       c = z + 16;
     const cx = a >> 4,
       cy = b >> 4,
       cz = c >> 4;
-    return this.matrix[cx]![cy]![cz]!.getBlock(a % 16, b % 16, c % 16);
+    return this.matrix[cx]![cy]![cz]!.getAt(a % 16, b % 16, c % 16);
   }
 }
 
@@ -199,11 +199,12 @@ export function makeChunkMesh(
   for (let x = 0; x < 16; x++) {
     for (let y = 0; y < 16; y++) {
       for (let z = 0; z < 16; z++) {
-        const id = chunk.getBlock(x, y, z);
+        const id = chunk.getAt(x, y, z);
 
         const uv = UVStore[id]!;
+        if (!uv) continue;
 
-        if (id && !cg.getBlock(x + 1, y, z)) {
+        if (id && !cg.getAt(x + 1, y, z)) {
           xp(
             vertices,
             uvs,
@@ -218,7 +219,7 @@ export function makeChunkMesh(
             uv.xp.end.v
           );
         }
-        if (id && !cg.getBlock(x - 1, y, z)) {
+        if (id && !cg.getAt(x - 1, y, z)) {
           xm(
             vertices,
             uvs,
@@ -233,7 +234,7 @@ export function makeChunkMesh(
             uv.xm.end.v
           );
         }
-        if (id && !cg.getBlock(x, y, z + 1)) {
+        if (id && !cg.getAt(x, y, z + 1)) {
           zp(
             vertices,
             uvs,
@@ -248,7 +249,7 @@ export function makeChunkMesh(
             uv.zp.end.v
           );
         }
-        if (id && !cg.getBlock(x, y, z - 1)) {
+        if (id && !cg.getAt(x, y, z - 1)) {
           zm(
             vertices,
             uvs,
@@ -263,7 +264,7 @@ export function makeChunkMesh(
             uv.zm.end.v
           );
         }
-        if (id && !cg.getBlock(x, y + 1, z)) {
+        if (id && !cg.getAt(x, y + 1, z)) {
           yp(
             vertices,
             uvs,
@@ -278,7 +279,7 @@ export function makeChunkMesh(
             uv.yp.end.v
           );
         }
-        if (id && !cg.getBlock(x, y - 1, z)) {
+        if (id && !cg.getAt(x, y - 1, z)) {
           ym(
             vertices,
             uvs,
