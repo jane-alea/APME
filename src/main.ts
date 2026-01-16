@@ -65,6 +65,20 @@ loader.loadAsync("assets/texture.png").then((tex) => {
           }
         }
       }
+
+      if (map.fog.on) {
+        scene.fog = new THREE.Fog(
+          new THREE.Color().setHex(parseInt(map.fog.color.replace("#", ""), 16))
+        );
+        scene.fog.near = map.fog.near;
+        scene.fog.far = map.fog.far;
+      }
+
+      if (map.light !== "#ffffff") {
+        newMat.color = new THREE.Color().setHex(
+          parseInt(map.light.replace("#", ""), 16)
+        );
+      }
     })
   );
 });

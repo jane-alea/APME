@@ -83,6 +83,11 @@ export namespace maps {
           return new Zone(new Vector3(x, y, z), new Vector3(w, h, d));
         }
       );
+      map.fog.on = !!source.f0g;
+      map.fog.near = source.f0gNr;
+      map.fog.far = source.f0gFr;
+      map.fog.color = source.f0gClr;
+      map.light = source.liClr;
       for (const [blockData, xyz] of source.chnks) {
         const { x, y, z } = decodeCoords(xyz);
         const chunk = new Chunk16(() => 0);
