@@ -200,9 +200,13 @@ export function makeChunkMesh(
     for (let y = 0; y < 16; y++) {
       for (let z = 0; z < 16; z++) {
         const id = chunk.getAt(x, y, z);
+        if (!id) continue;
 
         const uv = UVStore[id]!;
-        if (!uv) continue;
+        if (!uv) {
+          console.error("missing UV for " + id);
+          continue;
+        }
 
         if (id && !cg.getAt(x + 1, y, z)) {
           xp(
