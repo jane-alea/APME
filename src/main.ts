@@ -13,7 +13,7 @@ const camera = new THREE.PerspectiveCamera(
   90,
   innerWidth / innerHeight,
   0.1,
-  256
+  256,
 );
 
 const cubeMesh = new THREE.BoxGeometry(16, 16, 16);
@@ -67,19 +67,21 @@ loader.loadAsync("assets/texture.png").then((tex) => {
       }
 
       if (map.fog.on) {
-        scene.fog = new THREE.Fog(
-          new THREE.Color().setHex(parseInt(map.fog.color.replace("#", ""), 16))
+        const fogColor = new THREE.Color().setHex(
+          parseInt(map.fog.color.replace("#", ""), 16),
         );
+        scene.fog = new THREE.Fog(fogColor);
         scene.fog.near = map.fog.near;
         scene.fog.far = map.fog.far;
+        renderer.setClearColor(fogColor);
       }
 
       if (map.light !== "#ffffff") {
         newMat.color = new THREE.Color().setHex(
-          parseInt(map.light.replace("#", ""), 16)
+          parseInt(map.light.replace("#", ""), 16),
         );
       }
-    })
+    }),
   );
 });
 const obj = new THREE.Mesh(geo, mat);
