@@ -17,8 +17,10 @@ export default interface IBlockInfo {
   plantCollidable?: boolean;
   nameTagTransparent?: boolean;
   separateLowerSlabTexture?: boolean;
-  isLowerSlab?: boolean;
-  isUpperSlab?: boolean;
+
+  // APME specific properties
+  isLower?: boolean;
+  isUpper?: boolean;
   isSolidColor?: boolean;
 }
 
@@ -109,7 +111,7 @@ const pairs = Object.entries(BLOCKS);
 for (let [id, data] of pairs) {
   if (data.type === BlockType.Slab || data.type === BlockType.Tile) {
     BLOCKS[+id + 1] = { ...data };
-    BLOCKS[+id + 1]!.isUpperSlab = true;
-    data.isLowerSlab = true;
+    BLOCKS[+id + 1]!.isUpper = true;
+    data.isLower = true;
   }
 }

@@ -1,6 +1,8 @@
+import { BLOCKS } from "../blocks/blocks.js";
 import type { Chunk16 } from "../core/chunk16.js";
 import { UVStore } from "./uv-generator.js";
 import { BufferGeometry, Float32BufferAttribute } from "three";
+import { Relationship, shouldDrawFace } from "./visibility.js";
 
 type C = Chunk16<number>;
 
@@ -15,7 +17,7 @@ function xp(
   u0: number,
   u1: number,
   v0: number,
-  v1: number
+  v1: number,
 ) {
   vert.push(x, y0, z0, x, y1, z0, x, y1, z1, x, y0, z0, x, y1, z1, x, y0, z1);
   uv.push(u1, v1, u1, v0, u0, v0, u1, v1, u0, v0, u0, v1);
@@ -32,7 +34,7 @@ function xm(
   u0: number,
   u1: number,
   v0: number,
-  v1: number
+  v1: number,
 ) {
   vert.push(x, y0, z0, x, y1, z1, x, y1, z0, x, y0, z0, x, y0, z1, x, y1, z1);
   uv.push(u0, v1, u1, v0, u0, v0, u0, v1, u1, v1, u1, v0);
@@ -49,7 +51,7 @@ function ym(
   u0: number,
   u1: number,
   v0: number,
-  v1: number
+  v1: number,
 ) {
   vert.push(x0, y, z0, x1, y, z0, x1, y, z1, x0, y, z0, x1, y, z1, x0, y, z1);
   uv.push(u0, v1, u0, v0, u1, v0, u0, v1, u1, v0, u1, v1);
@@ -66,7 +68,7 @@ function yp(
   u0: number,
   u1: number,
   v0: number,
-  v1: number
+  v1: number,
 ) {
   vert.push(x0, y, z0, x1, y, z1, x1, y, z0, x0, y, z0, x0, y, z1, x1, y, z1);
   uv.push(u0, v1, u1, v0, u0, v0, u0, v1, u1, v1, u1, v0);
@@ -83,7 +85,7 @@ function zp(
   u0: number,
   u1: number,
   v0: number,
-  v1: number
+  v1: number,
 ) {
   vert.push(x0, y0, z, x1, y0, z, x1, y1, z, x0, y0, z, x1, y1, z, x0, y1, z);
   uv.push(u0, v1, u1, v1, u1, v0, u0, v1, u1, v0, u0, v0);
@@ -100,7 +102,7 @@ function zm(
   u0: number,
   u1: number,
   v0: number,
-  v1: number
+  v1: number,
 ) {
   vert.push(x0, y0, z, x1, y1, z, x1, y0, z, x0, y0, z, x0, y1, z, x1, y1, z);
   uv.push(u1, v1, u0, v0, u0, v1, u1, v1, u1, v0, u0, v0);
@@ -129,7 +131,7 @@ class ChunkGroup {
       ym?: C;
       zp?: C;
       zm?: C;
-    }
+    },
   ) {
     this.matrix = [
       [
@@ -190,7 +192,7 @@ export function makeChunkMesh(
     ym?: C;
     zp?: C;
     zm?: C;
-  }
+  },
 ) {
   const vertices: number[] = [];
   const uvs: number[] = [];
@@ -202,13 +204,18 @@ export function makeChunkMesh(
         const id = chunk.getAt(x, y, z);
         if (!id) continue;
 
+        const info = BLOCKS[id]!;
+
         const uv = UVStore[id]!;
         if (!uv) {
           console.error("missing UV for " + id);
           continue;
         }
 
-        if (id && !cg.getAt(x + 1, y, z)) {
+        if (
+          id &&
+          shouldDrawFace(info, BLOCKS[cg.getAt(x + 1, y, z)], Relationship.Side)
+        ) {
           xp(
             vertices,
             uvs,
@@ -220,10 +227,13 @@ export function makeChunkMesh(
             uv.xp.start.u,
             uv.xp.end.u,
             uv.xp.start.v,
-            uv.xp.end.v
+            uv.xp.end.v,
           );
         }
-        if (id && !cg.getAt(x - 1, y, z)) {
+        if (
+          id &&
+          shouldDrawFace(info, BLOCKS[cg.getAt(x - 1, y, z)], Relationship.Side)
+        ) {
           xm(
             vertices,
             uvs,
@@ -235,10 +245,13 @@ export function makeChunkMesh(
             uv.xm.start.u,
             uv.xm.end.u,
             uv.xm.start.v,
-            uv.xm.end.v
+            uv.xm.end.v,
           );
         }
-        if (id && !cg.getAt(x, y, z + 1)) {
+        if (
+          id &&
+          shouldDrawFace(info, BLOCKS[cg.getAt(x, y, z + 1)], Relationship.Side)
+        ) {
           zp(
             vertices,
             uvs,
@@ -250,10 +263,13 @@ export function makeChunkMesh(
             uv.zp.start.u,
             uv.zp.end.u,
             uv.zp.start.v,
-            uv.zp.end.v
+            uv.zp.end.v,
           );
         }
-        if (id && !cg.getAt(x, y, z - 1)) {
+        if (
+          id &&
+          shouldDrawFace(info, BLOCKS[cg.getAt(x, y, z - 1)], Relationship.Side)
+        ) {
           zm(
             vertices,
             uvs,
@@ -265,10 +281,13 @@ export function makeChunkMesh(
             uv.zm.start.u,
             uv.zm.end.u,
             uv.zm.start.v,
-            uv.zm.end.v
+            uv.zm.end.v,
           );
         }
-        if (id && !cg.getAt(x, y + 1, z)) {
+        if (
+          id &&
+          shouldDrawFace(info, BLOCKS[cg.getAt(x, y + 1, z)], Relationship.Up)
+        ) {
           yp(
             vertices,
             uvs,
@@ -280,10 +299,13 @@ export function makeChunkMesh(
             uv.yp.start.u,
             uv.yp.end.u,
             uv.yp.start.v,
-            uv.yp.end.v
+            uv.yp.end.v,
           );
         }
-        if (id && !cg.getAt(x, y - 1, z)) {
+        if (
+          id &&
+          shouldDrawFace(info, BLOCKS[cg.getAt(x, y - 1, z)], Relationship.Down)
+        ) {
           ym(
             vertices,
             uvs,
@@ -295,7 +317,7 @@ export function makeChunkMesh(
             uv.ym.start.u,
             uv.ym.end.u,
             uv.ym.start.v,
-            uv.ym.end.v
+            uv.ym.end.v,
           );
         }
       }
