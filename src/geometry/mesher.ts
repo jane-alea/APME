@@ -212,286 +212,371 @@ export function makeChunkMesh(
           continue;
         }
 
-        if (info.type === BlockType.Cube) {
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x + 1, y, z)],
-              Relationship.Side,
-            )
-          ) {
-            xp(
-              vertices,
-              uvs,
-              x + 1,
-              y,
-              y + 1,
-              z,
-              z + 1,
-              uv.xp.start.u,
-              uv.xp.end.u,
-              uv.xp.start.v,
-              uv.xp.end.v,
-            );
+        switch (info.type) {
+          case BlockType.Cube: {
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x + 1, y, z)],
+                Relationship.Side,
+              )
+            ) {
+              xp(
+                vertices,
+                uvs,
+                x + 1,
+                y,
+                y + 1,
+                z,
+                z + 1,
+                uv.xp.start.u,
+                uv.xp.end.u,
+                uv.xp.start.v,
+                uv.xp.end.v,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x - 1, y, z)],
+                Relationship.Side,
+              )
+            ) {
+              xm(
+                vertices,
+                uvs,
+                x,
+                y,
+                y + 1,
+                z,
+                z + 1,
+                uv.xm.start.u,
+                uv.xm.end.u,
+                uv.xm.start.v,
+                uv.xm.end.v,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y, z + 1)],
+                Relationship.Side,
+              )
+            ) {
+              zp(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y,
+                y + 1,
+                z + 1,
+                uv.zp.start.u,
+                uv.zp.end.u,
+                uv.zp.start.v,
+                uv.zp.end.v,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y, z - 1)],
+                Relationship.Side,
+              )
+            ) {
+              zm(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y,
+                y + 1,
+                z,
+                uv.zm.start.u,
+                uv.zm.end.u,
+                uv.zm.start.v,
+                uv.zm.end.v,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y + 1, z)],
+                Relationship.Up,
+              )
+            ) {
+              yp(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y + 1,
+                z,
+                z + 1,
+                uv.yp.start.u,
+                uv.yp.end.u,
+                uv.yp.start.v,
+                uv.yp.end.v,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y - 1, z)],
+                Relationship.Down,
+              )
+            ) {
+              ym(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y,
+                z,
+                z + 1,
+                uv.ym.start.u,
+                uv.ym.end.u,
+                uv.ym.start.v,
+                uv.ym.end.v,
+              );
+            }
+            break;
           }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x - 1, y, z)],
-              Relationship.Side,
-            )
-          ) {
-            xm(
-              vertices,
-              uvs,
-              x,
-              y,
-              y + 1,
-              z,
-              z + 1,
-              uv.xm.start.u,
-              uv.xm.end.u,
-              uv.xm.start.v,
-              uv.xm.end.v,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x, y, z + 1)],
-              Relationship.Side,
-            )
-          ) {
-            zp(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y,
-              y + 1,
-              z + 1,
-              uv.zp.start.u,
-              uv.zp.end.u,
-              uv.zp.start.v,
-              uv.zp.end.v,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x, y, z - 1)],
-              Relationship.Side,
-            )
-          ) {
-            zm(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y,
-              y + 1,
-              z,
-              uv.zm.start.u,
-              uv.zm.end.u,
-              uv.zm.start.v,
-              uv.zm.end.v,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(info, BLOCKS[cg.getAt(x, y + 1, z)], Relationship.Up)
-          ) {
-            yp(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y + 1,
-              z,
-              z + 1,
-              uv.yp.start.u,
-              uv.yp.end.u,
-              uv.yp.start.v,
-              uv.yp.end.v,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x, y - 1, z)],
-              Relationship.Down,
-            )
-          ) {
-            ym(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y,
-              z,
-              z + 1,
-              uv.ym.start.u,
-              uv.ym.end.u,
-              uv.ym.start.v,
-              uv.ym.end.v,
-            );
-          }
-        } else if (info.isTileOrSlab) {
-          const dy = info.isUpper
-            ? info.type === BlockType.Slab
-              ? 0.5
-              : 7 / 8
-            : 0;
-          const h = info.type === BlockType.Slab ? 0.5 : 1 / 8;
 
-          const zpD = uv.zp.start.v - uv.zp.end.v;
-          const zpE = uv.zp.end.v + zpD * dy;
-          const zpS = uv.zp.end.v + zpD * (dy + h);
+          case BlockType.Slab:
+          case BlockType.Tile: {
+            const dy = info.isUpper
+              ? info.type === BlockType.Slab
+                ? 0.5
+                : 7 / 8
+              : 0;
+            const h = info.type === BlockType.Slab ? 0.5 : 1 / 8;
 
-          const zmD = uv.zm.start.v - uv.zm.end.v;
-          const zmE = uv.zm.end.v + zmD * dy;
-          const zmS = uv.zm.end.v + zmD * (dy + h);
+            const zpD = uv.zp.start.v - uv.zp.end.v;
+            const zpE = uv.zp.end.v + zpD * dy;
+            const zpS = uv.zp.end.v + zpD * (dy + h);
 
-          const xpD = uv.xp.start.v - uv.xp.end.v;
-          const xpE = uv.xp.end.v + xpD * dy;
-          const xpS = uv.xp.end.v + xpD * (dy + h);
+            const zmD = uv.zm.start.v - uv.zm.end.v;
+            const zmE = uv.zm.end.v + zmD * dy;
+            const zmS = uv.zm.end.v + zmD * (dy + h);
 
-          const xmD = uv.xm.start.v - uv.xm.end.v;
-          const xmE = uv.xm.end.v + xmD * dy;
-          const xmS = uv.xm.end.v + xmD * (dy + h);
+            const xpD = uv.xp.start.v - uv.xp.end.v;
+            const xpE = uv.xp.end.v + xpD * dy;
+            const xpS = uv.xp.end.v + xpD * (dy + h);
 
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x + 1, y, z)],
-              Relationship.Side,
-            )
-          ) {
-            xp(
-              vertices,
-              uvs,
-              x + 1,
-              y + dy,
-              y + dy + h,
-              z,
-              z + 1,
-              uv.xp.start.u,
-              uv.xp.end.u,
-              xpS,
-              xpE,
-            );
+            const xmD = uv.xm.start.v - uv.xm.end.v;
+            const xmE = uv.xm.end.v + xmD * dy;
+            const xmS = uv.xm.end.v + xmD * (dy + h);
+
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x + 1, y, z)],
+                Relationship.Side,
+              )
+            ) {
+              xp(
+                vertices,
+                uvs,
+                x + 1,
+                y + dy,
+                y + dy + h,
+                z,
+                z + 1,
+                uv.xp.start.u,
+                uv.xp.end.u,
+                xpS,
+                xpE,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x - 1, y, z)],
+                Relationship.Side,
+              )
+            ) {
+              xm(
+                vertices,
+                uvs,
+                x,
+                y + dy,
+                y + dy + h,
+                z,
+                z + 1,
+                uv.xm.start.u,
+                uv.xm.end.u,
+                xmS,
+                xmE,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y, z + 1)],
+                Relationship.Side,
+              )
+            ) {
+              zp(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y + dy,
+                y + dy + h,
+                z + 1,
+                uv.zp.start.u,
+                uv.zp.end.u,
+                zpS,
+                zpE,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y, z - 1)],
+                Relationship.Side,
+              )
+            ) {
+              zm(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y + dy,
+                y + dy + h,
+                z,
+                uv.zm.start.u,
+                uv.zm.end.u,
+                zmS,
+                zmE,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y + 1, z)],
+                Relationship.Up,
+              )
+            ) {
+              yp(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y + dy + h,
+                z,
+                z + 1,
+                uv.yp.start.u,
+                uv.yp.end.u,
+                uv.yp.start.v,
+                uv.yp.end.v,
+              );
+            }
+            if (
+              id &&
+              shouldDrawFace(
+                info,
+                BLOCKS[cg.getAt(x, y - 1, z)],
+                Relationship.Down,
+              )
+            ) {
+              ym(
+                vertices,
+                uvs,
+                x,
+                x + 1,
+                y + dy,
+                z,
+                z + 1,
+                uv.ym.start.u,
+                uv.ym.end.u,
+                uv.ym.start.v,
+                uv.ym.end.v,
+              );
+            }
+            break;
           }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x - 1, y, z)],
-              Relationship.Side,
-            )
-          ) {
-            xm(
-              vertices,
-              uvs,
-              x,
-              y + dy,
-              y + dy + h,
-              z,
-              z + 1,
-              uv.xm.start.u,
-              uv.xm.end.u,
-              xmS,
-              xmE,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x, y, z + 1)],
-              Relationship.Side,
-            )
-          ) {
-            zp(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y + dy,
-              y + dy + h,
-              z + 1,
-              uv.zp.start.u,
-              uv.zp.end.u,
-              zpS,
-              zpE,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x, y, z - 1)],
-              Relationship.Side,
-            )
-          ) {
-            zm(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y + dy,
-              y + dy + h,
-              z,
-              uv.zm.start.u,
-              uv.zm.end.u,
-              zmS,
-              zmE,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(info, BLOCKS[cg.getAt(x, y + 1, z)], Relationship.Up)
-          ) {
-            yp(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y + dy + h,
-              z,
-              z + 1,
-              uv.yp.start.u,
-              uv.yp.end.u,
-              uv.yp.start.v,
-              uv.yp.end.v,
-            );
-          }
-          if (
-            id &&
-            shouldDrawFace(
-              info,
-              BLOCKS[cg.getAt(x, y - 1, z)],
-              Relationship.Down,
-            )
-          ) {
-            ym(
-              vertices,
-              uvs,
-              x,
-              x + 1,
-              y + dy,
-              z,
-              z + 1,
-              uv.ym.start.u,
-              uv.ym.end.u,
-              uv.ym.start.v,
-              uv.ym.end.v,
-            );
+
+          case BlockType.WallDecoration: {
+            switch (info.orientation) {
+              case 0: {
+                xp(
+                  vertices,
+                  uvs,
+                  x + 1 / 128,
+                  y,
+                  y + 1,
+                  z,
+                  z + 1,
+                  uv.xp.start.u,
+                  uv.xp.end.u,
+                  uv.xp.start.v,
+                  uv.xp.end.v,
+                );
+                break;
+              }
+              case 1: {
+                xm(
+                  vertices,
+                  uvs,
+                  x + 127 / 128,
+                  y,
+                  y + 1,
+                  z,
+                  z + 1,
+                  uv.xp.start.u,
+                  uv.xp.end.u,
+                  uv.xp.start.v,
+                  uv.xp.end.v,
+                );
+                break;
+              }
+              case 2: {
+                zp(
+                  vertices,
+                  uvs,
+                  x,
+                  x + 1,
+                  y,
+                  y + 1,
+                  z + 1 / 128,
+                  uv.xp.start.u,
+                  uv.xp.end.u,
+                  uv.xp.start.v,
+                  uv.xp.end.v,
+                );
+                break;
+              }
+              case 3: {
+                zm(
+                  vertices,
+                  uvs,
+                  x,
+                  x + 1,
+                  y,
+                  y + 1,
+                  z + 127 / 128,
+                  uv.xp.start.u,
+                  uv.xp.end.u,
+                  uv.xp.start.v,
+                  uv.xp.end.v,
+                );
+                break;
+              }
+            }
+            break;
           }
         }
       }
