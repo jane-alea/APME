@@ -40,11 +40,11 @@ const _1_32 = 1 / 32;
 const _1_16_32 = _1_32 / 16;
 const _1_1024 = 1 / 1024;
 
-for (const [id, data] of Object.entries(BLOCKS)) {
-  if (data.isSolidColor) {
-    const r = data.textureIndex >> 8;
-    const g = (data.textureIndex >> 4) & 0xf;
-    const b = data.textureIndex & 0xf;
+for (const [id, info] of Object.entries(BLOCKS)) {
+  if (info.isSolidColor) {
+    const r = info.textureIndex >> 8;
+    const g = (info.textureIndex >> 4) & 0xf;
+    const b = info.textureIndex & 0xf;
     const u = _1_32 * r + _1_16_32 * g + _1_1024;
     const v = 1 - (_1_32 * 31 + _1_16_32 * b + _1_1024);
     const uv: FaceUV = {
@@ -62,7 +62,7 @@ for (const [id, data] of Object.entries(BLOCKS)) {
       xp2: uv,
     };
   } else {
-    cursor = data.textureIndex;
+    cursor = info.textureIndex;
     const base = idxToUV(cursor);
     const entry: {
       xp: FaceUV;
@@ -85,11 +85,14 @@ for (const [id, data] of Object.entries(BLOCKS)) {
     };
     cursor++;
 
-    if (data.hasTopFace) entry.yp = idxToUV(cursor++);
-    if (data.hasBottomFace) entry.ym = idxToUV(cursor++);
-    if (data.twoFacedCrossPlant) entry.xp2 = idxToUV(cursor++);
-    if (data.hasOpposingFaces) {
+    if (info.hasTopFace) entry.yp = idxToUV(cursor++);
+    if (info.hasBottomFace) entry.ym = idxToUV(cursor++);
+    if (info.twoFacedCrossPlant) entry.xp2 = idxToUV(cursor++);
+    if (info.hasOpposingFaces) {
       entry.xm = entry.xp = idxToUV(cursor++);
+    }
+    if (info.separateLowerSlabTexture && info.isLower) {
+      entry.xm = entry.zm = entry.xp = entry.zp = idxToUV(cursor++);
     }
 
     UVStore[id] = entry;

@@ -22,6 +22,7 @@ export default interface IBlockInfo {
   isLower?: boolean;
   isUpper?: boolean;
   isSolidColor?: boolean;
+  isTileOrSlab?: boolean;
 }
 
 export enum Orientation {
@@ -108,10 +109,11 @@ for (const type of [
 }
 
 const pairs = Object.entries(BLOCKS);
-for (let [id, data] of pairs) {
-  if (data.type === BlockType.Slab || data.type === BlockType.Tile) {
-    BLOCKS[+id + 1] = { ...data };
+for (let [id, info] of pairs) {
+  if (info.type === BlockType.Slab || info.type === BlockType.Tile) {
+    info.isTileOrSlab = true;
+    BLOCKS[+id + 1] = { ...info };
     BLOCKS[+id + 1]!.isUpper = true;
-    data.isLower = true;
+    info.isLower = true;
   }
 }

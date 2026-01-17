@@ -7,7 +7,7 @@ export enum Relationship {
   Side,
 }
 
-const HasFullUpperFace = {
+const HasFullUpperFace: { [x: number]: [boolean, boolean] } = {
   [BlockType.Cube]: [true, true],
   [BlockType.Slab]: [false, true],
   [BlockType.WallDecoration]: [false, false],
@@ -17,13 +17,13 @@ const HasFullUpperFace = {
   [BlockType.Pillar]: [false, false],
 };
 
-const HasFullLowerFace = {
+const HasFullLowerFace: { [x: number]: [boolean, boolean] } = {
   [BlockType.Cube]: [true, true],
-  [BlockType.Slab]: [true, false],
+  [BlockType.Slab]: [false, true],
   [BlockType.WallDecoration]: [false, false],
   [BlockType.XPlant]: [false, false],
-  [BlockType.SquarePlant]: [true, false],
-  [BlockType.Tile]: [true, false],
+  [BlockType.SquarePlant]: [false, true],
+  [BlockType.Tile]: [false, true],
   [BlockType.Pillar]: [false, false],
 };
 
@@ -34,20 +34,30 @@ export function shouldDrawFace(
 ): boolean {
   if (!other) return true;
 
-  const idxUpperMain = main.isUpper || main.hasTopFace ? 1 : 0;
-  const idxLowerMain = main.isLower || main.hasBottomFace ? 1 : 0;
-  const idxUpperOther = other.isUpper || other.hasTopFace ? 1 : 0;
-  const idxLowerOther = other.isLower || other.hasBottomFace ? 1 : 0;
+  const idxUpperMain =
+    main.isUpper || (!main.isTileOrSlab && main.hasTopFace) ? 1 : 0;
+  const idxLowerMain =
+    main.isLower || (!main.isTileOrSlab && main.hasBottomFace) ? 1 : 0;
+  const idxUpperOther =
+    other.isUpper || (!other.isTileOrSlab && other.hasTopFace) ? 1 : 0;
+  const idxLowerOther =
+    other.isLower || (!other.isTileOrSlab && other.hasBottomFace) ? 1 : 0;
 
   if (relationship === Relationship.Down) {
-    if (HasFullLowerFace[idxLowerMain] && HasFullUpperFace[idxUpperOther]) {
+    if (
+      HasFullLowerFace[main.type]![idxLowerMain] &&
+      HasFullUpperFace[other.type]![idxUpperOther]
+    ) {
       return drawFaceBetweenIdenticalShapes(main, other);
     }
     return true;
   }
 
   if (relationship === Relationship.Up) {
-    if (HasFullLowerFace[idxUpperMain] && HasFullUpperFace[idxLowerOther]) {
+    if (
+      HasFullLowerFace[main.type]![idxUpperMain] &&
+      HasFullUpperFace[other.type]![idxLowerOther]
+    ) {
       return drawFaceBetweenIdenticalShapes(main, other);
     }
     return true;
