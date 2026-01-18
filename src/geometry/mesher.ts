@@ -578,6 +578,29 @@ export function makeChunkMesh(
             }
             break;
           }
+
+          case BlockType.SquarePlant: {
+            // prettier-ignore
+            {
+              xp(vertices, uvs, x + 0.25, y, y + 1, z, z + 1, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              xp(vertices, uvs, x + 0.75, y, y + 1, z, z + 1, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              xm(vertices, uvs, x + 0.25, y, y + 1, z, z + 1, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              xm(vertices, uvs, x + 0.75, y, y + 1, z, z + 1, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              zp(vertices, uvs, x, x + 1, y, y + 1, z + 0.25, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              zp(vertices, uvs, x, x + 1, y, y + 1, z + 0.75, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              zm(vertices, uvs, x, x + 1, y, y + 1, z + 0.25, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+              zm(vertices, uvs, x, x + 1, y, y + 1, z + 0.75, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
+
+              if (info.hasTopFace) {
+                yp(vertices, uvs, x, x + 1, y + 1, z, z + 1, uv.yp.start.u, uv.yp.end.u, uv.yp.start.v, uv.yp.end.v);
+              }
+              
+              if (info.hasBottomFace) {
+                ym(vertices, uvs, x, x + 1, y, z, z + 1, uv.ym.start.u, uv.ym.end.u, uv.ym.start.v, uv.ym.end.v);
+              }
+            }
+            break;
+          }
         }
       }
     }
