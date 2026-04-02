@@ -579,7 +579,8 @@ export function makeChunkMesh(
             break;
           }
 
-          case BlockType.SquarePlant: {
+          case BlockType.SquarePlant:
+          case BlockType.XPlant: {
             // prettier-ignore
             {
               xp(vertices, uvs, x + 0.25, y, y + 1, z, z + 1, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
