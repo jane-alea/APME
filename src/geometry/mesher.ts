@@ -108,6 +108,43 @@ function zm(
   uv.push(u1, v1, u0, v0, u0, v1, u1, v1, u1, v0, u0, v0);
 }
 
+function vQuad(
+  vert: number[],
+  uv: number[],
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  z0: number,
+  z1: number,
+  u0: number,
+  u1: number,
+  v0: number,
+  v1: number,
+) {
+  vert.push(
+    x0,
+    y0,
+    z0,
+    x0,
+    y1,
+    z0,
+    x1,
+    y1,
+    z1,
+    x0,
+    y0,
+    z0,
+    x1,
+    y1,
+    z1,
+    x1,
+    y0,
+    z1,
+  );
+  uv.push(u0, v1, u0, v0, u1, v0, u0, v1, u1, v0, u1, v1);
+}
+
 interface ChunkLike {
   getAt(x: number, y: number, z: number): number;
 }
@@ -579,8 +616,7 @@ export function makeChunkMesh(
             break;
           }
 
-          case BlockType.SquarePlant:
-          case BlockType.XPlant: {
+          case BlockType.SquarePlant: {
             // prettier-ignore
             {
               xp(vertices, uvs, x + 0.25, y, y + 1, z, z + 1, uv.xp.start.u, uv.xp.end.u, uv.xp.start.v, uv.xp.end.v);
@@ -601,6 +637,65 @@ export function makeChunkMesh(
               }
             }
             break;
+          }
+
+          case BlockType.XPlant: {
+            vQuad(
+              vertices,
+              uvs,
+              x,
+              x + 1,
+              y,
+              y + 1,
+              z,
+              z + 1,
+              uv.xpmain.start.u,
+              uv.xpmain.end.u,
+              uv.xpmain.start.v,
+              uv.xpmain.end.v,
+            );
+            vQuad(
+              vertices,
+              uvs,
+              x + 1,
+              x,
+              y,
+              y + 1,
+              z + 1,
+              z,
+              uv.xpmain.start.u,
+              uv.xpmain.end.u,
+              uv.xpmain.start.v,
+              uv.xpmain.end.v,
+            );
+            vQuad(
+              vertices,
+              uvs,
+              x + 1,
+              x,
+              y,
+              y + 1,
+              z,
+              z + 1,
+              uv.xp2.start.u,
+              uv.xp2.end.u,
+              uv.xp2.start.v,
+              uv.xp2.end.v,
+            );
+            vQuad(
+              vertices,
+              uvs,
+              x,
+              x + 1,
+              y,
+              y + 1,
+              z + 1,
+              z,
+              uv.xp2.start.u,
+              uv.xp2.end.u,
+              uv.xp2.start.v,
+              uv.xp2.end.v,
+            );
           }
         }
       }
