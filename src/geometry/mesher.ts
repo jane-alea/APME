@@ -54,7 +54,7 @@ function ym(
   v1: number,
 ) {
   vert.push(x0, y, z0, x1, y, z0, x1, y, z1, x0, y, z0, x1, y, z1, x0, y, z1);
-  uv.push(u0, v1, u0, v0, u1, v0, u0, v1, u1, v0, u1, v1);
+  uv.push(u0, v0, u1, v0, u1, v1, u0, v0, u1, v1, u0, v1);
 }
 
 function yp(
@@ -71,7 +71,7 @@ function yp(
   v1: number,
 ) {
   vert.push(x0, y, z0, x1, y, z1, x1, y, z0, x0, y, z0, x0, y, z1, x1, y, z1);
-  uv.push(u0, v1, u1, v0, u0, v0, u0, v1, u1, v1, u1, v0);
+  uv.push(u1, v1, u0, v0, u0, v1, u1, v1, u1, v0, u0, v0);
 }
 
 function zp(
