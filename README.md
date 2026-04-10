@@ -16,4 +16,4 @@ No. However, the Protox developers are aware of its existence.
 If you notice any difference between the texture mapping on the official map editor and the one on APME, please notify me! I would like to ensure visual consistency.
 
 ## Contact
-DM alea, `networklagenjoyer` on Discord if you have any inquiries regarding APME.
+APME Discord server: https://discord.gg/shwBAp3mMG
