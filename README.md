@@ -12,5 +12,8 @@ This will be a modal editor; tools will include simple regular place/break, fill
 ## Is this official?
 No. However, the Protox developers are aware of its existence.
 
+## Bugs
+If you notice any difference between the texture mapping on the official map editor and the one on APME, please notify me! I would like to ensure visual consistency.
+
 ## Contact
 DM alea, `networklagenjoyer` on Discord if you have any inquiries regarding APME.
