@@ -220,6 +220,9 @@ class ChunkGroup {
   }
 }
 
+const PILLAR_0: number = 5.5 / 16;
+const PILLAR_1: number = 10.5 / 16;
+
 export function makeChunkMesh(
   chunk: C,
   neighboringChunks: {
@@ -696,6 +699,89 @@ export function makeChunkMesh(
               uv.xp2.start.v,
               uv.xp2.end.v,
             );
+            break;
+          }
+
+          case BlockType.Pillar: {
+            xp(
+              vertices,
+              uvs,
+              x + PILLAR_1,
+              y,
+              y + 1,
+              z + PILLAR_0,
+              z + PILLAR_1,
+              uv.xp.start.u + (uv.xp.end.u - uv.xp.start.u) * PILLAR_0,
+              uv.xp.start.u + (uv.xp.end.u - uv.xp.start.u) * PILLAR_1,
+              uv.xp.start.v,
+              uv.xp.end.v,
+            );
+            xm(
+              vertices,
+              uvs,
+              x + PILLAR_0,
+              y,
+              y + 1,
+              z + PILLAR_0,
+              z + PILLAR_1,
+              uv.xm.start.u + (uv.xm.end.u - uv.xm.start.u) * PILLAR_0,
+              uv.xm.start.u + (uv.xm.end.u - uv.xm.start.u) * PILLAR_1,
+              uv.xm.start.v,
+              uv.xm.end.v,
+            );
+            zp(
+              vertices,
+              uvs,
+              x + PILLAR_0,
+              x + PILLAR_1,
+              y,
+              y + 1,
+              z + PILLAR_1,
+              uv.zp.start.u + (uv.zp.end.u - uv.zp.start.u) * PILLAR_0,
+              uv.zp.start.u + (uv.zp.end.u - uv.zp.start.u) * PILLAR_1,
+              uv.zp.start.v,
+              uv.zp.end.v,
+            );
+            zm(
+              vertices,
+              uvs,
+              x + PILLAR_0,
+              x + PILLAR_1,
+              y,
+              y + 1,
+              z + PILLAR_0,
+              uv.zm.start.u + (uv.zm.end.u - uv.zm.start.u) * PILLAR_0,
+              uv.zm.start.u + (uv.zm.end.u - uv.zm.start.u) * PILLAR_1,
+              uv.zm.start.v,
+              uv.zm.end.v,
+            );
+            yp(
+              vertices,
+              uvs,
+              x + PILLAR_0,
+              x + PILLAR_1,
+              y + 1,
+              z + PILLAR_0,
+              z + PILLAR_1,
+              uv.yp.start.u + (uv.yp.end.u - uv.yp.start.u) * PILLAR_0,
+              uv.yp.start.u + (uv.yp.end.u - uv.yp.start.u) * PILLAR_1,
+              uv.yp.start.v + (uv.yp.end.v - uv.yp.start.v) * (11 / 16),
+              uv.yp.end.v,
+            );
+            ym(
+              vertices,
+              uvs,
+              x + PILLAR_0,
+              x + PILLAR_1,
+              y,
+              z + PILLAR_0,
+              z + PILLAR_1,
+              uv.ym.start.u + (uv.ym.end.u - uv.ym.start.u) * PILLAR_0,
+              uv.ym.start.u + (uv.ym.end.u - uv.ym.start.u) * PILLAR_1,
+              uv.ym.start.v + (uv.ym.end.v - uv.ym.start.v) * (11 / 16),
+              uv.ym.end.v,
+            );
+            break;
           }
         }
       }
