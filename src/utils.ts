@@ -34,3 +34,35 @@ export class Result<T, E> {
     return res;
   }
 }
+
+export class APMEEventEmitter<EMap extends { [key: string]: any[] }> {
+  map: { [key in keyof EMap]?: ((...args: EMap[key]) => void)[] } = {};
+
+  on<K extends keyof EMap>(
+    key: K,
+    handler: (...args: EMap[K]) => void,
+  ): { off: VoidFunction } {
+    if (!this.map[key]) {
+      this.map[key] = [];
+    }
+
+    this.map[key].push(handler);
+
+    let removed = false;
+    return {
+      off: () => {
+        if (removed) return;
+        this.map[key]?.splice(this.map[key].indexOf(handler), 1);
+      },
+    };
+  }
+
+  trigger<K extends keyof EMap>(key: K, args: EMap[K]) {
+    const functions = this.map[key];
+    if (functions) {
+      for (const fx of functions) {
+        fx(...args);
+      }
+    }
+  }
+}
