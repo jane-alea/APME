@@ -22,7 +22,9 @@ nodes are communicating elements capable of replicating each other's behaviour, 
 3. synchronisation: on client nodes, this means sending changes for approval to the central node, and processing merge conflicts; on central nodes, it means receiving changes from client nodes, accepting uncontested ones, sorting the others and issuing merge conflicts.
 
 ## history
+
 there are two types of history:
+
 - local history,
 - shared history.
 
@@ -33,3 +35,41 @@ selection, and the specific tool you are using are both elements of local histor
 real changes to the map, on the other hand, are kept on the shared history and synchronised between clients. when appropriate, they will include the current selection and tool state as a "prefix" in order to indicate what the action was carried out on.
 
 history is made out of a linked list of changes; it never goes backwards. in order to "undo" previous changes, reverse actions are added to the history in the reverse order changes were made.
+
+## supported file formats
+
+- Official Protox Map Format (JSON), version 2. v1 maps should be upgraded through the official map editor before being imported into APME
+- APME binary map format, all versions
+
+## the APME map format
+
+**FO**: File Only — not stored in memory, but stored on save files
+
+Note that APME chunks will always be 16 blocks wide, tall and deep.
+
+- `name` the name of this map
+- `version` **FO** APME map file format version, used for upgrades as needed. currently, `0`
+- `skybox`
+  - `topColor` color of the top of the skybox (`skClrTop` in the official map format)
+  - `middleColor` color of the middle of the skybox (`skClrMiddle` in the official map format)
+  - `bottomColor` color of the bottom of the skybox (`skClrBottom` in the official map format)
+  - `offset` Y offset of the skybox (`skOffset`)
+- `fog`
+  - `enabled` whether there is fog (`f0g`)
+  - `near` start of the fog (`f0gNr`)
+  - `far` end of the fog (`f0gFr`)
+  - `color` colour of the fog (`f0gClr`)
+- `lightColor` colour that is multiplied componentwise with the map textures' colours (`liClr`)
+- `history` a list of the changes to the map
+  - `limit` how many changes are saved. it can be as long as desired, but that might lead to large map files
+  - `changes` a list of the last up to `self.limit` changes
+- `layers` the map's layers, as a list
+  - `name` the name of this layer, used mostly for visual identification in the UI. it is not a unique ID
+  - `active` whether this layer is active, or, in other words, whether it modifies the map
+  - `chunks` 4096 chunks, as a list
+    - `empty` whether this chunk has blocks
+    - `blocks` if `!self.empty`, contains 4096 blocks
+  - `mode` can be either of:
+    - `"normal"` zero blocks change nothing; non-zero blocks replace that of all layers under this one
+    - `"addition"` blocks only have an effect if there is no lower layer which has a block at that position
+    - `"exclusion"` blocks will be removed where this layer has blocks, but nothing will be put in their place
