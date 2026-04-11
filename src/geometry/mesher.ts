@@ -220,8 +220,8 @@ class ChunkGroup {
   }
 }
 
-const PILLAR_0: number = 5.5 / 16;
-const PILLAR_1: number = 10.5 / 16;
+const PILLAR_0: number = 1 / 3;
+const PILLAR_1: number = 2 / 3;
 
 export function makeChunkMesh(
   chunk: C,
@@ -765,8 +765,8 @@ export function makeChunkMesh(
               z + PILLAR_1,
               uv.yp.start.u + (uv.yp.end.u - uv.yp.start.u) * PILLAR_0,
               uv.yp.start.u + (uv.yp.end.u - uv.yp.start.u) * PILLAR_1,
-              uv.yp.start.v + (uv.yp.end.v - uv.yp.start.v) * (11 / 16),
-              uv.yp.end.v,
+              uv.yp.start.v + (uv.yp.end.v - uv.yp.start.v) * PILLAR_0,
+              uv.yp.start.v + (uv.yp.end.v - uv.yp.start.v) * PILLAR_1,
             );
             ym(
               vertices,
@@ -778,8 +778,8 @@ export function makeChunkMesh(
               z + PILLAR_1,
               uv.ym.start.u + (uv.ym.end.u - uv.ym.start.u) * PILLAR_0,
               uv.ym.start.u + (uv.ym.end.u - uv.ym.start.u) * PILLAR_1,
-              uv.ym.start.v + (uv.ym.end.v - uv.ym.start.v) * (11 / 16),
-              uv.ym.end.v,
+              uv.ym.start.v + (uv.ym.end.v - uv.ym.start.v) * PILLAR_0,
+              uv.ym.start.v + (uv.ym.end.v - uv.ym.start.v) * PILLAR_1,
             );
             break;
           }
