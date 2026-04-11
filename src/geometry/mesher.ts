@@ -220,6 +220,8 @@ class ChunkGroup {
   }
 }
 
+const WALL_DECO_0: number = 0.02;
+const WALL_DECO_1: number = 1 - WALL_DECO_0;
 const PILLAR_0: number = 1 / 3;
 const PILLAR_1: number = 2 / 3;
 
@@ -555,7 +557,7 @@ export function makeChunkMesh(
                 xp(
                   vertices,
                   uvs,
-                  x + 1 / 128,
+                  x + WALL_DECO_0,
                   y,
                   y + 1,
                   z,
@@ -571,7 +573,7 @@ export function makeChunkMesh(
                 xm(
                   vertices,
                   uvs,
-                  x + 127 / 128,
+                  x + WALL_DECO_1,
                   y,
                   y + 1,
                   z,
@@ -591,7 +593,7 @@ export function makeChunkMesh(
                   x + 1,
                   y,
                   y + 1,
-                  z + 1 / 128,
+                  z + WALL_DECO_0,
                   uv.xp.start.u,
                   uv.xp.end.u,
                   uv.xp.start.v,
@@ -607,7 +609,7 @@ export function makeChunkMesh(
                   x + 1,
                   y,
                   y + 1,
-                  z + 127 / 128,
+                  z + WALL_DECO_1,
                   uv.xp.start.u,
                   uv.xp.end.u,
                   uv.xp.start.v,
