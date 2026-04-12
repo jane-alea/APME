@@ -4,6 +4,7 @@ import { Chunk16 } from "./core/chunk16.js";
 import { makeChunkMesh } from "./geometry/mesher.js";
 import { maps } from "./core/map.js";
 import { APMEUI } from "./ui/ui.js";
+import { exportToObj } from "./obj-export.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
 
@@ -58,7 +59,14 @@ loader.loadAsync("assets/texture.png").then((tex) => {
           for (let z = 0; z < 16; z++) {
             const ch = map.layers[0]!.getAt(x, y, z);
             if (ch) {
-              const geom = makeChunkMesh(ch, {});
+              const geom = makeChunkMesh(ch, {
+                xm: map.layers[0]!.getAt(x - 1, y, z) || undefined,
+                xp: map.layers[0]!.getAt(x + 1, y, z) || undefined,
+                zm: map.layers[0]!.getAt(x, y, z - 1) || undefined,
+                zp: map.layers[0]!.getAt(x, y, z + 1) || undefined,
+                yp: map.layers[0]!.getAt(x, y - 1, z) || undefined,
+                ym: map.layers[0]!.getAt(x, y + 1, z) || undefined,
+              });
               const mesh = new THREE.Mesh(geom, newMat);
               mesh.position.set(x * 16, y * 16, z * 16);
               scene.add(mesh);
@@ -66,6 +74,8 @@ loader.loadAsync("assets/texture.png").then((tex) => {
           }
         }
       }
+
+      console.log(exportToObj(map));
 
       if (map.fog.enabled) {
         const fogColor = new THREE.Color().setHex(

@@ -162,12 +162,12 @@ class ChunkGroup {
   constructor(
     chunk: C,
     neighboringChunks: {
-      xp?: C;
-      xm?: C;
-      yp?: C;
-      ym?: C;
-      zp?: C;
-      zm?: C;
+      xp?: C | undefined;
+      xm?: C | undefined;
+      yp?: C | undefined;
+      ym?: C | undefined;
+      zp?: C | undefined;
+      zm?: C | undefined;
     },
   ) {
     this.matrix = [
@@ -225,15 +225,15 @@ const WALL_DECO_1: number = 1 - WALL_DECO_0;
 const PILLAR_0: number = 1 / 3;
 const PILLAR_1: number = 2 / 3;
 
-export function makeChunkMesh(
+export function makeChunkMeshRaw(
   chunk: C,
   neighboringChunks: {
-    xp?: C;
-    xm?: C;
-    yp?: C;
-    ym?: C;
-    zp?: C;
-    zm?: C;
+    xp?: C | undefined;
+    xm?: C | undefined;
+    yp?: C | undefined;
+    ym?: C | undefined;
+    zp?: C | undefined;
+    zm?: C | undefined;
   },
 ) {
   const vertices: number[] = [];
@@ -790,6 +790,21 @@ export function makeChunkMesh(
     }
   }
 
+  return { vertices, uvs };
+}
+
+export function makeChunkMesh(
+  chunk: C,
+  neighboringChunks: {
+    xp?: C | undefined;
+    xm?: C | undefined;
+    yp?: C | undefined;
+    ym?: C | undefined;
+    zp?: C | undefined;
+    zm?: C | undefined;
+  },
+) {
+  const { vertices, uvs } = makeChunkMeshRaw(chunk, neighboringChunks);
   const geometry = new BufferGeometry();
   geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
   geometry.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
