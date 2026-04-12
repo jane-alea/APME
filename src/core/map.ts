@@ -37,6 +37,7 @@ export namespace maps {
     spawns: Spawn[] = [];
     stepAreas: Zone[] = [];
     points: Zone[] = [];
+    dummies: Vector3[] = [];
   }
 
   export class Spawn {

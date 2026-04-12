@@ -82,3 +82,5 @@ Note that APME chunks will always be 16 blocks wide, tall and deep.
   - `spawns` a list of:
     - `position` position (3-dimensional)
     - `orientation` spawn Y-axis rotation, in radians
+  - `dummies` a list of:
+    - `position` position (3-dimensional)
