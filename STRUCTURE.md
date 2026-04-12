@@ -73,3 +73,12 @@ Note that APME chunks will always be 16 blocks wide, tall and deep.
     - `"normal"` zero blocks change nothing; non-zero blocks replace that of all layers under this one
     - `"addition"` blocks only have an effect if there is no lower layer which has a block at that position
     - `"exclusion"` blocks will be removed where this layer has blocks, but nothing will be put in their place
+  - `stepAreas` a list of:
+    - `position` start position (3-dimensional)
+    - `size` size of the area (3-dimensional)
+  - `points` a list of:
+    - `position` start position (3-dimensional)
+    - `size` size of the area (3-dimensional)
+  - `spawns` a list of:
+    - `position` position (3-dimensional)
+    - `orientation` spawn Y-axis rotation, in radians

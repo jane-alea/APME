@@ -50,12 +50,12 @@ loader.loadAsync("assets/texture.png").then((tex) => {
   const newMat = new THREE.MeshBasicMaterial({ map: tex, alphaTest: 0.5 });
   obj.material = newMat;
   fetch("assets/map.txt").then((resp) =>
-    resp.json().then((data) => {
-      const map = maps.load(data).value!;
+    resp.text().then((data) => {
+      const map = maps.loadProtoxMap(data).value!;
       for (let x = 0; x < 16; x++) {
         for (let y = 0; y < 16; y++) {
           for (let z = 0; z < 16; z++) {
-            const ch = map.getAt(x, y, z);
+            const ch = map.layers[0]!.getAt(x, y, z);
             if (ch) {
               const geom = makeChunkMesh(ch, {});
               const mesh = new THREE.Mesh(geom, newMat);
@@ -66,7 +66,7 @@ loader.loadAsync("assets/texture.png").then((tex) => {
         }
       }
 
-      if (map.fog.on) {
+      if (map.fog.enabled) {
         const fogColor = new THREE.Color().setHex(
           parseInt(map.fog.color.replace("#", ""), 16),
         );
@@ -76,9 +76,9 @@ loader.loadAsync("assets/texture.png").then((tex) => {
         renderer.setClearColor(fogColor);
       }
 
-      if (map.light !== "#ffffff") {
+      if (map.lightColor !== "#ffffff") {
         newMat.color = new THREE.Color().setHex(
-          parseInt(map.light.replace("#", ""), 16),
+          parseInt(map.lightColor.replace("#", ""), 16),
         );
       }
     }),
