@@ -66,3 +66,28 @@ export class APMEEventEmitter<EMap extends { [key: string]: any[] }> {
     }
   }
 }
+
+export function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.addEventListener("load", () => {
+      resolve(img);
+    });
+
+    img.addEventListener("error", (error) => {
+      reject(`${error}`);
+    });
+  });
+}
+
+export function createAndAddElement<K extends keyof HTMLElementTagNameMap>(
+  key: K,
+  parent: HTMLElement,
+  process: (element: HTMLElementTagNameMap[K]) => void,
+): HTMLElementTagNameMap[K] {
+  const element = document.createElement(key);
+  process(element);
+  parent.appendChild(element);
+  return element;
+}

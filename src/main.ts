@@ -3,6 +3,7 @@ import { CameraControls } from "./ui/camera-controls.js";
 import { Chunk16 } from "./core/chunk16.js";
 import { makeChunkMesh } from "./geometry/mesher.js";
 import { maps } from "./core/map.js";
+import { APMEUI } from "./ui/ui.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
 
@@ -106,3 +107,10 @@ function animate() {
 }
 
 animate();
+
+APMEUI.create().then((ui) => {
+  (document.getElementById("icon") as HTMLImageElement).src =
+    ui.icons.get("upload")!;
+  (document.getElementById("icon2") as HTMLImageElement).src =
+    ui.icons.get("add")!;
+});

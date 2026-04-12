@@ -1,0 +1,10 @@
+Texture Name,UV x,UV y,px x,px y
+add,0,0,0,0
+block,0.25,0,16,0
+download,0.5,0,32,0
+export,0.75,0,48,0
+hidden,0,0.25,0,16
+remove,0.25,0.25,16,16
+select,0.5,0.25,32,16
+upload,0.75,0.25,48,16
+visible,0,0.5,0,32
