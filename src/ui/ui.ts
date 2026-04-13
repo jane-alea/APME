@@ -50,6 +50,12 @@ export abstract class BaseUIComponent {
     this.innerContainer.appendChild(button.outerContainer);
   }
 
+  iconButton(icon: string, action: VoidFunction) {
+    const button = new TextlessIconButton(this.ui, icon, action);
+    this.children.push(button);
+    this.innerContainer.appendChild(button.outerContainer);
+  }
+
   destroy() {
     for (const child of this.children) {
       child.destroy();
@@ -84,6 +90,32 @@ export class TextIconButton extends BaseUIComponent {
     this.textElement.classList.add("label");
     this.textElement.innerText = text;
     this.innerContainer.appendChild(this.textElement);
+
+    this.innerContainer.addEventListener("click", (event) => {
+      if (event.button === 0) action();
+    });
+  }
+}
+
+export class TextlessIconButton extends BaseUIComponent {
+  innerContainer: HTMLElement;
+  outerContainer: HTMLElement;
+  iconElement: HTMLImageElement;
+  children: BaseUIComponent[] = [];
+  ui: APMEUI;
+
+  constructor(ui: APMEUI, icon: string, action: VoidFunction) {
+    super();
+    this.ui = ui;
+
+    this.innerContainer = document.createElement("div");
+    this.innerContainer.classList.add("icon-button", "textless");
+    this.outerContainer = this.innerContainer;
+
+    this.iconElement = document.createElement("img");
+    this.iconElement.classList.add("icon");
+    this.iconElement.src = ui.icons.get(icon) || "";
+    this.innerContainer.appendChild(this.iconElement);
 
     this.innerContainer.addEventListener("click", (event) => {
       if (event.button === 0) action();
