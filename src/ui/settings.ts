@@ -1,3 +1,3 @@
 export namespace Settings {
-    export const sensitivity = 1;
+  export const sensitivity = 1;
 }

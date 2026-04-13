@@ -22,7 +22,10 @@ export class CameraControls {
     [key: string]: boolean;
   } = {};
 
-  constructor(public camera: Camera, public canvas: HTMLCanvasElement) {
+  constructor(
+    public camera: Camera,
+    public canvas: HTMLCanvasElement,
+  ) {
     camera.rotation.order = "YXZ";
 
     this.position = new Vector3();
@@ -79,7 +82,7 @@ export class CameraControls {
       this.camera.position.set(
         this.position.x,
         this.position.y,
-        this.position.z
+        this.position.z,
       );
   }
 
@@ -120,7 +123,7 @@ export class CameraControls {
 
       this.rotation.x = Math.max(
         Math.min(this.rotation.x + dX, Math.PI / 2),
-        -Math.PI / 2
+        -Math.PI / 2,
       );
       this.rotation.y = this.rotation.y + dY;
 
