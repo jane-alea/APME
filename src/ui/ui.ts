@@ -48,12 +48,28 @@ export abstract class BaseUIComponent {
     const button = new TextIconButton(this.ui, icon, text, action);
     this.children.push(button);
     this.innerContainer.appendChild(button.outerContainer);
+    return button;
   }
 
   iconButton(icon: string, action: VoidFunction) {
     const button = new TextlessIconButton(this.ui, icon, action);
     this.children.push(button);
     this.innerContainer.appendChild(button.outerContainer);
+    return button;
+  }
+
+  secH() {
+    const secH = new SecH(this.ui);
+    this.children.push(secH);
+    this.innerContainer.appendChild(secH.outerContainer);
+    return secH;
+  }
+
+  secV() {
+    const secV = new SecV(this.ui);
+    this.children.push(secV);
+    this.innerContainer.appendChild(secV.outerContainer);
+    return secV;
   }
 
   destroy() {
@@ -120,5 +136,35 @@ export class TextlessIconButton extends BaseUIComponent {
     this.innerContainer.addEventListener("click", (event) => {
       if (event.button === 0) action();
     });
+  }
+}
+
+export class SecH extends BaseUIComponent {
+  innerContainer: HTMLElement;
+  outerContainer: HTMLElement;
+  children: BaseUIComponent[] = [];
+  ui: APMEUI;
+  constructor(ui: APMEUI) {
+    super();
+    this.ui = ui;
+
+    this.innerContainer = document.createElement("div");
+    this.innerContainer.classList.add("sec-h", "not-bar");
+    this.outerContainer = this.innerContainer;
+  }
+}
+
+export class SecV extends BaseUIComponent {
+  innerContainer: HTMLElement;
+  outerContainer: HTMLElement;
+  children: BaseUIComponent[] = [];
+  ui: APMEUI;
+  constructor(ui: APMEUI) {
+    super();
+    this.ui = ui;
+
+    this.innerContainer = document.createElement("div");
+    this.innerContainer.classList.add("sec-v", "not-sidebar");
+    this.outerContainer = this.innerContainer;
   }
 }
