@@ -2,9 +2,39 @@ export function decodeCoords(xyz: number): V3 {
   return { x: (xyz >> 8) & 0xf, y: (xyz >> 4) & 0xf, z: xyz & 0xf };
 }
 
-const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export function codeToId(t: string): number {
-  return t.split("").reduce((t, e) => t * 62 + chars.indexOf(e), 0);
+  return t.split("").reduce((t, e) => t * 62 + CHARS.indexOf(e), 0);
+}
+
+export function idToCode(t: number) {
+  if (t === 0) {
+    return CHARS[0];
+  }
+  let e = "";
+  while (t > 0) {
+    e = CHARS[t % 62] + e;
+    t = Math.floor(t / 62);
+  }
+  return e;
+}
+
+export function fromRGB(r: number, g: number, b: number): number {
+  return (
+    ((Math.floor(r / 16) << 8) |
+      (Math.floor(g / 16) << 4) |
+      Math.floor(b / 16)) +
+    700001
+  );
+}
+
+export function toRGB(id: number) {
+  id -= 700001;
+  return {
+    r: (id & 3840) >> 8,
+    g: (id & 240) >> 4,
+    b: id & 15,
+  };
 }
 
 export interface V3 {
@@ -18,7 +48,7 @@ export class Result<T, E> {
   error?: E;
   type: 0 | 1;
 
-  constructor(type: 0 | 1) {
+  private constructor(type: 0 | 1) {
     this.type = type;
   }
 
