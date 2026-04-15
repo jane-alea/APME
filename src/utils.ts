@@ -52,6 +52,14 @@ export class Result<T, E> {
     this.type = type;
   }
 
+  transmute<N>(): Result<N, E> {
+    if (this.type === 1) {
+      return Result.err(this.error!);
+    } else {
+      throw "failed to transmute success into error";
+    }
+  }
+
   static ok<T, E>(value: T) {
     const res = new Result<T, E>(0);
     res.value = value;

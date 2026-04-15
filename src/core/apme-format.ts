@@ -1,9 +1,11 @@
-import { Color, ColorManagement } from "three";
+import { Color, ColorManagement, Vector3 } from "three";
 import { Result } from "../utils.js";
-import type { maps } from "./map.js";
+import { maps } from "./map.js";
 import { clean } from "./map-utils.js";
+import { Chunk16 } from "./chunk16.js";
 
 const encoder = new TextEncoder();
+const decoder = new TextDecoder();
 
 const CHUNK_SIZE = 4096;
 
@@ -253,5 +255,240 @@ function writeColor(color: string, buffer: DataView, position: number) {
     buffer.setUint8(position, r);
     buffer.setUint8(position + 1, g);
     buffer.setUint8(position + 2, b);
+  }
+}
+
+export function loadFromAPMEFormat(
+  source: ArrayBuffer,
+): Result<maps.Map, string> {
+  const view = new BetterDataView(new DataView(source));
+
+  if (view.u32() !== 1162694721) {
+    return Result.err(
+      "The map is not a valid APME map file, as it does not start with the magic sequence APME.",
+    );
+  }
+
+  const version = view.u8();
+  switch (version) {
+    case 1: {
+      const mapName = parseMapName0(view);
+
+      const skyTop = parseColor(view);
+      const skyMiddle = parseColor(view);
+      const skyBottom = parseColor(view);
+      const skyOffset = view.i16();
+
+      const fogEnabled = view.boolean();
+      const fogNear = view.f32();
+      const fogFar = view.f32();
+      const fogColor = parseColor(view);
+      const lightColor = parseColor(view);
+
+      const { ids, fx } = parsePalette0(view);
+      const layers: maps.Layer[] = [];
+      const layerCount = view.u16();
+      for (let i = 0; i < layerCount; i++) {
+        const maybeLayer = parseLayer0(view, ids, fx);
+        if (maybeLayer.value) {
+          layers.push(maybeLayer.value);
+        } else {
+          return maybeLayer.transmute();
+        }
+      }
+
+      const maxHistoryEntries = view.u16();
+      const historyEntries = view.u16();
+
+      const map = new maps.Map();
+      map.name = mapName;
+      map.sky.topColor = skyTop;
+      map.sky.middleColor = skyMiddle;
+      map.sky.bottomColor = skyBottom;
+      map.sky.offset = skyOffset;
+      map.fog.enabled = fogEnabled;
+      map.fog.near = fogNear;
+      map.fog.far = fogFar;
+      map.fog.color = fogColor;
+      map.lightColor = lightColor;
+      map.layers = layers;
+
+      return Result.ok(map);
+    }
+
+    default:
+      return Result.err(
+        `${version} is not a supported APME file format version. You might need to upgrade your editor.`,
+      );
+  }
+}
+
+function parseMapName0(view: BetterDataView) {
+  return view.string();
+}
+
+function parsePalette0(view: BetterDataView): {
+  count: number;
+  ids: number[];
+  fx: () => number;
+} {
+  const count = view.u16();
+  const ids = [];
+  for (let i = 0; i < count; i++) {
+    const upper = view.u16();
+    const lower = view.u8();
+    ids.push((upper << 8) | lower);
+  }
+  const fx = count > 255 ? () => view.u16() : () => view.u8();
+  return { count, ids, fx };
+}
+
+function parseLayer0(
+  view: BetterDataView,
+  ids: number[],
+  fx: () => number,
+): Result<maps.Layer, string> {
+  const name = view.string();
+  const modeRaw = view.u8();
+  let mode: "normal" | "addition" | "exclusion";
+  if (modeRaw === 0) {
+    mode = "normal";
+  } else if (modeRaw === 1) {
+    mode = "addition";
+  } else if (modeRaw === 2) {
+    mode = "exclusion";
+  } else {
+    return Result.err(`${modeRaw}: unsupported layer mode`);
+  }
+
+  const stepAreaCount = view.u16();
+  const stepAreas: maps.Zone[] = [];
+  for (let i = 0; i < stepAreaCount; i++) {
+    const x = view.u8();
+    const y = view.u8();
+    const z = view.u8();
+    const w = view.u8();
+    const h = view.u8();
+    const d = view.u8();
+    stepAreas.push(new maps.Zone(new Vector3(x, y, z), new Vector3(w, h, d)));
+  }
+
+  const pointCount = view.u16();
+  const points: maps.Zone[] = [];
+  for (let i = 0; i < pointCount; i++) {
+    const x = view.u8();
+    const y = view.u8();
+    const z = view.u8();
+    const w = view.u8();
+    const h = view.u8();
+    const d = view.u8();
+    points.push(new maps.Zone(new Vector3(x, y, z), new Vector3(w, h, d)));
+  }
+
+  const spawnCount = view.u16();
+  const spawns: maps.Spawn[] = [];
+  for (let i = 0; i < spawnCount; i++) {
+    const x = view.f32();
+    const y = view.f32();
+    const z = view.f32();
+    const r = view.f32();
+    spawns.push(new maps.Spawn(new Vector3(x, y, z), r));
+  }
+
+  const dummyCount = view.u16();
+  const dummies: Vector3[] = [];
+  for (let i = 0; i < dummyCount; i++) {
+    const x = view.f32();
+    const y = view.f32();
+    const z = view.f32();
+    dummies.push(new Vector3(x, y, z));
+  }
+
+  let cIndex = 0;
+  const layer = new maps.Layer(() => null);
+  while (cIndex < 4096) {
+    const skip = view.u8();
+    if (skip === 0) {
+      const chunk = new Chunk16(() => 0);
+      let bIndex = 0;
+      while (bIndex < 4096) {
+        let id = ids[fx()]!;
+        let count = view.u8();
+        for (let i = bIndex; i < bIndex + count; i++) {
+          chunk.array[i] = id;
+        }
+        bIndex += count;
+      }
+      layer.array[cIndex] = chunk;
+      cIndex++;
+    } else {
+      cIndex += skip;
+    }
+  }
+
+  layer.name = name;
+  layer.stepAreas = stepAreas;
+  layer.points = points;
+  layer.spawns = spawns;
+  layer.dummies = dummies;
+
+  return Result.ok(layer);
+}
+
+function parseColor(view: BetterDataView): string {
+  const r = view.u8();
+  const g = view.u8();
+  const b = view.u8();
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+class BetterDataView {
+  index = 0;
+
+  constructor(private view: DataView) {}
+
+  u32(): number {
+    const value = this.view.getUint32(this.index, true);
+    this.index += 4;
+    return value;
+  }
+
+  f32(): number {
+    const value = this.view.getFloat32(this.index, true);
+    this.index += 4;
+    return value;
+  }
+
+  u16(): number {
+    const value = this.view.getUint16(this.index, true);
+    this.index += 2;
+    return value;
+  }
+
+  i16(): number {
+    const value = this.view.getInt16(this.index, true);
+    this.index += 2;
+    return value;
+  }
+
+  u8(): number {
+    const value = this.view.getUint8(this.index);
+    this.index++;
+    return value;
+  }
+
+  boolean(): boolean {
+    const value = this.view.getUint8(this.index);
+    this.index++;
+    return value !== 0;
+  }
+
+  string() {
+    const byteLength = this.u16();
+    const string = decoder.decode(
+      this.view.buffer.slice(this.index, this.index + byteLength),
+    );
+    this.index += byteLength;
+    return string;
   }
 }

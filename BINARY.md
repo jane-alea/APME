@@ -32,7 +32,7 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 17. FOR EACH LAYER:
     1. 2 octets: layer name length [u16]
     2. UTF-8 encoded layer name
-    3. 1 octet: layer name (0 is normal, 1 is addition and 2 is exclusion)
+    3. 1 octet: layer mode (0 is normal, 1 is addition and 2 is exclusion)
     4. 2 octets: number of step areas [u16]
     5. FOR EACH STEP AREA:
        1. 1 octet: X coordinate of the start of the step area [u8]

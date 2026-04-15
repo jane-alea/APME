@@ -3,9 +3,8 @@ import { CameraControls } from "./ui/camera-controls.js";
 import { Chunk16 } from "./core/chunk16.js";
 import { makeChunkMesh } from "./geometry/mesher.js";
 import { APMEUI } from "./ui/ui.js";
-import { exportToObj } from "./obj-export.js";
 import { loadProtoxMap } from "./core/protox-format.js";
-import { saveToAPMEFormat } from "./core/apme-format.js";
+import { loadFromAPMEFormat, saveToAPMEFormat } from "./core/apme-format.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
 
@@ -55,26 +54,6 @@ loader.loadAsync("assets/texture.png").then((tex) => {
   fetch("assets/map.txt").then((resp) =>
     resp.text().then((data) => {
       const map = loadProtoxMap(data).value!;
-      for (let x = 0; x < 16; x++) {
-        for (let y = 0; y < 16; y++) {
-          for (let z = 0; z < 16; z++) {
-            const ch = map.layers[0]!.getAt(x, y, z);
-            if (ch) {
-              const geom = makeChunkMesh(ch, {
-                xm: map.layers[0]!.getAt(x - 1, y, z) || undefined,
-                xp: map.layers[0]!.getAt(x + 1, y, z) || undefined,
-                zm: map.layers[0]!.getAt(x, y, z - 1) || undefined,
-                zp: map.layers[0]!.getAt(x, y, z + 1) || undefined,
-                yp: map.layers[0]!.getAt(x, y - 1, z) || undefined,
-                ym: map.layers[0]!.getAt(x, y + 1, z) || undefined,
-              });
-              const mesh = new THREE.Mesh(geom, newMat);
-              mesh.position.set(x * 16, y * 16, z * 16);
-              scene.add(mesh);
-            }
-          }
-        }
-      }
 
       // console.log(exportToObj(map));
       const apmeFormat = saveToAPMEFormat(map);
@@ -91,21 +70,45 @@ loader.loadAsync("assets/texture.png").then((tex) => {
         document.body.appendChild(a);
       }
 
-      if (map.fog.enabled) {
-        const fogColor = new THREE.Color().setHex(
-          parseInt(map.fog.color.replace("#", ""), 16),
-        );
-        scene.fog = new THREE.Fog(fogColor);
-        scene.fog.near = map.fog.near;
-        scene.fog.far = map.fog.far;
-        renderer.setClearColor(fogColor);
-      }
+      apmeFormat.value?.arrayBuffer().then((buffer) => {
+        const decoded = loadFromAPMEFormat(buffer).value!;
+        for (let x = 0; x < 16; x++) {
+          for (let y = 0; y < 16; y++) {
+            for (let z = 0; z < 16; z++) {
+              const ch = decoded.layers[0]!.getAt(x, y, z);
+              if (ch) {
+                const geom = makeChunkMesh(ch, {
+                  xm: decoded.layers[0]!.getAt(x - 1, y, z) || undefined,
+                  xp: decoded.layers[0]!.getAt(x + 1, y, z) || undefined,
+                  zm: decoded.layers[0]!.getAt(x, y, z - 1) || undefined,
+                  zp: decoded.layers[0]!.getAt(x, y, z + 1) || undefined,
+                  yp: decoded.layers[0]!.getAt(x, y - 1, z) || undefined,
+                  ym: decoded.layers[0]!.getAt(x, y + 1, z) || undefined,
+                });
+                const mesh = new THREE.Mesh(geom, newMat);
+                mesh.position.set(x * 16, y * 16, z * 16);
+                scene.add(mesh);
+              }
+            }
+          }
+        }
 
-      if (map.lightColor !== "#ffffff") {
-        newMat.color = new THREE.Color().setHex(
-          parseInt(map.lightColor.replace("#", ""), 16),
-        );
-      }
+        if (decoded.fog.enabled) {
+          const fogColor = new THREE.Color().setHex(
+            parseInt(decoded.fog.color.replace("#", ""), 16),
+          );
+          scene.fog = new THREE.Fog(fogColor);
+          scene.fog.near = decoded.fog.near;
+          scene.fog.far = decoded.fog.far;
+          renderer.setClearColor(fogColor);
+        }
+
+        if (decoded.lightColor !== "#ffffff") {
+          newMat.color = new THREE.Color().setHex(
+            parseInt(decoded.lightColor.replace("#", ""), 16),
+          );
+        }
+      });
     }),
   );
 });
