@@ -1,4 +1,4 @@
-import { APMEEventEmitter } from "../utils";
+import { APMEEventEmitter } from "../utils.js";
 import type {
   Change,
   Client,
@@ -6,7 +6,7 @@ import type {
   ClientTransferEventMap,
   ServerSideTransferChannel,
   ServerTransferEventMap,
-} from "./index";
+} from "./index.js";
 
 export function localChannel(): [LocalServerEnd, LocalClientEnd] {
   const server = new LocalServerEnd();

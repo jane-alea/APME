@@ -2,9 +2,10 @@ import * as THREE from "three";
 import { CameraControls } from "./ui/camera-controls.js";
 import { Chunk16 } from "./core/chunk16.js";
 import { makeChunkMesh } from "./geometry/mesher.js";
-import { maps } from "./core/map.js";
 import { APMEUI } from "./ui/ui.js";
 import { exportToObj } from "./obj-export.js";
+import { loadProtoxMap } from "./core/protox-format.js";
+import { saveToAPMEFormat } from "./core/apme-format.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
 
@@ -53,7 +54,7 @@ loader.loadAsync("assets/texture.png").then((tex) => {
   obj.material = newMat;
   fetch("assets/map.txt").then((resp) =>
     resp.text().then((data) => {
-      const map = maps.loadProtoxMap(data).value!;
+      const map = loadProtoxMap(data).value!;
       for (let x = 0; x < 16; x++) {
         for (let y = 0; y < 16; y++) {
           for (let z = 0; z < 16; z++) {
@@ -75,7 +76,20 @@ loader.loadAsync("assets/texture.png").then((tex) => {
         }
       }
 
-      console.log(exportToObj(map));
+      // console.log(exportToObj(map));
+      const apmeFormat = saveToAPMEFormat(map);
+      if (apmeFormat.value) {
+        const url = URL.createObjectURL(apmeFormat.value);
+        const a = document.createElement("a");
+        a.style.zIndex = "100000";
+        a.style.position = "absolute";
+        a.style.left = "0";
+        a.style.top = "0";
+        a.href = url;
+        a.download = "test.apme";
+        a.innerText = "download binary map!";
+        document.body.appendChild(a);
+      }
 
       if (map.fog.enabled) {
         const fogColor = new THREE.Color().setHex(
