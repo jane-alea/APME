@@ -144,7 +144,7 @@ export function saveToAPMEFormat(unprocessed: maps.Map): Result<Blob, string> {
         let id = chunk.array[0]!;
         let run = 1;
         for (let i = 1; i < 4096; i++) {
-          if (chunk.array[i] === id || run < 255) {
+          if (chunk.array[i] === id && run < 255) {
             run++;
           } else {
             pushBlock(iter, idToIndex[id]!);
