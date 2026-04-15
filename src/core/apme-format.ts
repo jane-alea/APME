@@ -81,6 +81,7 @@ export function saveToAPMEFormat(unprocessed: maps.Map): Result<Blob, string> {
   const pushBlock = paletteBuffer.length > 255 ? pushU16 : pushU8;
 
   const iter = { buffers, i: 0, view, array: new Uint8Array(CHUNK_SIZE) };
+  iter.view = new DataView(iter.array.buffer);
   pushU16(iter, map.layers.length);
 
   for (const layer of map.layers) {
