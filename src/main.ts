@@ -135,9 +135,9 @@ function animate() {
 
 animate();
 
-APMEUI.create().then((ui) => {
-  (document.getElementById("icon") as HTMLImageElement).src =
-    ui.icons.get("upload")!;
-  (document.getElementById("icon2") as HTMLImageElement).src =
-    ui.icons.get("add")!;
-});
+// APMEUI.create().then((ui) => {
+//   (document.getElementById("icon") as HTMLImageElement).src =
+//     ui.icons.get("upload")!;
+//   (document.getElementById("icon2") as HTMLImageElement).src =
+//     ui.icons.get("add")!;
+// });

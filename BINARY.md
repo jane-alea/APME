@@ -55,7 +55,7 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
        2. 4 octets: Y coordinate of the spawn [f32]
        3. 4 octets: Z coordinate of the spawn [f32]
        4. 4 octets: rotation of the spawn [f32]
-    10. 2 octets: number of dummies [f32]
+    10. 2 octets: number of dummies [u16]
     11. FOR EACH DUMMY:
         1. 4 octets: X coordinate of the dummy [f32]
         2. 4 octets: Y coordinate of the dummy [f32]

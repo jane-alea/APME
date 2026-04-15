@@ -218,7 +218,7 @@ function pushF32(
     iter.view = new DataView(iter.array.buffer);
   }
   iter.view.setFloat32(iter.i, value, true);
-  iter.i += 2;
+  iter.i += 4;
 }
 
 function flush(iter: {
@@ -427,6 +427,7 @@ function parseLayer0(
   }
 
   layer.name = name;
+  layer.mode = mode;
   layer.stepAreas = stepAreas;
   layer.points = points;
   layer.spawns = spawns;
