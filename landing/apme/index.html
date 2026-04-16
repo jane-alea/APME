@@ -31,6 +31,7 @@
         font-family: monospace;
         font-size: 2vw;
       }
+      
       .hr {
         width: 10vw;
         height: 1px;
@@ -39,8 +40,11 @@
         margin-left: auto;
         margin-right: auto;
       }
+
       .desc {
         font-size: 0.6em;
+        max-width: 80vw;
+        text-align: center;
       }
 
       .desc,
@@ -61,6 +65,19 @@
 
       .ns {
         user-select: none;
+      }
+
+      @media (max-aspect-ratio: 9/10) {
+        body {
+          font-size: 6vw;
+        }
+
+        .hr {
+          width: 20vw;
+          margin: 2vw;
+          margin-left: auto;
+          margin-right: auto;
+        }
       }
     </style>
   </body>
