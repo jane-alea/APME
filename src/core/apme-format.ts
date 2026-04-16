@@ -91,6 +91,7 @@ export function saveToAPMEFormat(unprocessed: maps.Map): Result<Blob, string> {
     pushU16(iter, nameArray.length);
     flush(iter);
     buffers.push(nameArray);
+    pushU8(iter, layer.active ? 1 : 0);
     pushU8(
       iter,
       {
@@ -349,6 +350,7 @@ function parseLayer0(
   fx: () => number,
 ): Result<maps.Layer, string> {
   const name = view.string();
+  const active = view.boolean();
   const modeRaw = view.u8();
   let mode: "normal" | "addition" | "exclusion";
   if (modeRaw === 0) {
@@ -427,6 +429,7 @@ function parseLayer0(
   }
 
   layer.name = name;
+  layer.active = active;
   layer.mode = mode;
   layer.stepAreas = stepAreas;
   layer.points = points;

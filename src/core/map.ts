@@ -34,6 +34,7 @@ export namespace maps {
   export class Layer extends Chunk16<Chunk16<number> | null> {
     name = "";
     mode: "normal" | "addition" | "exclusion" = "normal";
+    active = true;
     spawns: Spawn[] = [];
     stepAreas: Zone[] = [];
     points: Zone[] = [];
