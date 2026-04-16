@@ -148,6 +148,13 @@ export function saveToProtoxFormat(map: maps.Map): string {
       stepArea.size.z,
     ]);
 
+  let maxX = 0;
+  let maxY = 0;
+  let maxZ = 0;
+  let minX = 256;
+  let minY = 256;
+  let minZ = 256;
+
   pMap.chnks = [];
   for (let cx = 0; cx < 16; cx++) {
     for (let cy = 0; cy < 16; cy++) {
@@ -179,6 +186,18 @@ export function saveToProtoxFormat(map: maps.Map): string {
             }
           }
 
+          if (block !== 0) {
+            const wx = cx * 16 + (q >> 8);
+            const wy = cy * 16 + ((q >> 4) & 0xf);
+            const wz = cz * 16 + (q & 0xf);
+            maxX = Math.max(maxX, wx + 1);
+            maxY = Math.max(maxY, wy + 1);
+            maxZ = Math.max(maxZ, wz + 1);
+            minX = Math.min(minX, wx - 1);
+            minY = Math.min(minY, wy - 1);
+            minZ = Math.min(minZ, wz - 1);
+          }
+
           if (block !== prevBlock) {
             if (prevBlock !== 0) {
               blockData.push([idToCode(prevBlock)!, start, run]);
@@ -202,6 +221,16 @@ export function saveToProtoxFormat(map: maps.Map): string {
         }
       }
     }
+  }
+
+  if (maxX < minX) {
+    console.log(maxX, minX);
+    // fully empty map
+    pMap.mnVoxel = [0, 0, 0];
+    pMap.mxVoxel = [0, 0, 0];
+  } else {
+    pMap.mnVoxel = [minX, minY, minZ];
+    pMap.mxVoxel = [maxX, maxY, maxZ];
   }
 
   return JSON.stringify(pMap);
