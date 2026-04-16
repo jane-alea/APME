@@ -3,7 +3,7 @@ import { CameraControls } from "./ui/camera-controls.js";
 import { Chunk16 } from "./core/chunk16.js";
 import { makeChunkMesh } from "./geometry/mesher.js";
 import { APMEUI } from "./ui/ui.js";
-import { loadProtoxMap } from "./core/protox-format.js";
+import { loadProtoxMap, saveToProtoxFormat } from "./core/protox-format.js";
 import { loadFromAPMEFormat, saveToAPMEFormat } from "./core/apme-format.js";
 
 const canvas = document.getElementsByTagName("canvas")[0]!;
@@ -108,6 +108,8 @@ loader.loadAsync("assets/texture.png").then((tex) => {
             parseInt(decoded.lightColor.replace("#", ""), 16),
           );
         }
+
+        console.log(saveToProtoxFormat(decoded));
       });
     }),
   );

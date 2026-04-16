@@ -2,6 +2,10 @@ export function decodeCoords(xyz: number): V3 {
   return { x: (xyz >> 8) & 0xf, y: (xyz >> 4) & 0xf, z: xyz & 0xf };
 }
 
+export function encodeCoords(xyz: V3): number {
+  return (xyz.x << 8) | (xyz.y << 4) | xyz.z;
+}
+
 const CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export function codeToId(t: string): number {
   return t.split("").reduce((t, e) => t * 62 + CHARS.indexOf(e), 0);

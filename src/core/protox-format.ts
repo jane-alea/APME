@@ -1,5 +1,11 @@
 import { Vector3 } from "three";
-import { codeToId, decodeCoords, Result } from "../utils.js";
+import {
+  codeToId,
+  decodeCoords,
+  encodeCoords,
+  idToCode,
+  Result,
+} from "../utils.js";
 import { Chunk16 } from "./chunk16.js";
 import { maps } from "./map.js";
 
@@ -94,4 +100,109 @@ export function loadProtoxMap(sourceText: string): Result<maps.Map, string> {
     console.error(e);
     return Result.err("Map loading error: " + (e as Error).toString());
   }
+}
+
+export function saveToProtoxFormat(map: maps.Map): string {
+  const pMap: any = {};
+  pMap.v = 2;
+  pMap.n = map.name;
+  pMap.f0g = map.fog.enabled;
+  pMap.f0gNr = map.fog.near;
+  pMap.f0gFr = map.fog.far;
+  pMap.f0gClr = map.fog.color;
+  pMap.skClrTop = map.sky.topColor;
+  pMap.skClrMiddle = map.sky.middleColor;
+  pMap.skClrBottom = map.sky.bottomColor;
+  pMap.skOffset = map.sky.offset;
+  pMap.liClr = map.lightColor;
+  pMap.chnkSize = 16;
+
+  const activeLayers = map.layers.filter((layer) => layer.active);
+
+  pMap.spwns = (<maps.Spawn[]>[])
+    .concat(...activeLayers.map((layer) => layer.spawns))
+    .map((spawn) => [
+      spawn.position.x,
+      spawn.position.y,
+      spawn.position.z,
+      spawn.orientation,
+    ]);
+  pMap.pnts = (<maps.Zone[]>[])
+    .concat(...activeLayers.map((layer) => layer.points))
+    .map((point) => [
+      point.position.x,
+      point.position.y,
+      point.position.z,
+      point.size.x,
+      point.size.y,
+      point.size.z,
+    ]);
+  pMap.stpArs = (<maps.Zone[]>[])
+    .concat(...activeLayers.map((layer) => layer.stepAreas))
+    .map((stepArea) => [
+      stepArea.position.x,
+      stepArea.position.y,
+      stepArea.position.z,
+      stepArea.size.x,
+      stepArea.size.y,
+      stepArea.size.z,
+    ]);
+
+  pMap.chnks = [];
+  for (let cx = 0; cx < 16; cx++) {
+    for (let cy = 0; cy < 16; cy++) {
+      for (let cz = 0; cz < 16; cz++) {
+        let blockData: [string, number, number][] = [];
+
+        const relevantChunks: [
+          "normal" | "addition" | "exclusion",
+          Chunk16<number>,
+        ][] = activeLayers
+          .map((layer) => [layer.mode, layer.getAt(cx, cy, cz)])
+          .filter((x) => !!x[1]) as unknown as any;
+
+        let prevBlock: number = 0;
+        let run = 0;
+        let start = 0;
+        for (let q = 0; q < 4096; q++) {
+          let block = 0;
+          for (const [mode, chunk] of relevantChunks) {
+            let blockHere = chunk.array[q]!;
+            if (blockHere !== 0) {
+              if (mode === "normal") {
+                block = blockHere;
+              } else if (mode === "addition") {
+                block = block === 0 ? blockHere : block;
+              } else if (mode === "exclusion") {
+                block = blockHere === 0 ? block : 0;
+              }
+            }
+          }
+
+          if (block !== prevBlock) {
+            if (prevBlock !== 0) {
+              blockData.push([idToCode(prevBlock)!, start, run]);
+            }
+
+            run = 1;
+            prevBlock = block;
+            start = q;
+          } else {
+            run++;
+          }
+        }
+
+        if (prevBlock !== 0) {
+          blockData.push([idToCode(prevBlock)!, start, run]);
+        }
+
+        let xyz = encodeCoords({ x: cx, y: cy, z: cz });
+        if (blockData.length > 0) {
+          pMap.chnks.push([blockData, xyz]);
+        }
+      }
+    }
+  }
+
+  return JSON.stringify(pMap);
 }
