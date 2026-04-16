@@ -1,7 +1,7 @@
-# APME: the Alternative Protox Map Editor
+# [APME: the Alternative Protox Map Editor](https://apme.dev)
 
 ## Important note
-> APME is still in very early development. Don't expect much yet!
+> APME is still in very early development. Don't expect much yet! Furthermore, the main development of the website now happens in a private repository, and this repository will only mirror the documentation changes. It will also, later, hold the APME desktop client.
 
 ## What is this?
 APME is a voxel editor for [Protox](https://protox.io/)'s map system. It does not, for now, attempt to fully replace the [official mapmaker](https://mapmaker.protox.io/), which has the distinctive feature of simulating the game's exact movement.
