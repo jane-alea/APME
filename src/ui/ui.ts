@@ -13,7 +13,7 @@ export class APMEUI {
       "#757C2A",
     );
     document.documentElement.style.setProperty(
-      "--apme-foreground-1",
+      "--apme-foreground-2",
       "#626C28",
     );
     document.documentElement.style.setProperty(
