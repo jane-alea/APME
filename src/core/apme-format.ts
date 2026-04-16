@@ -103,22 +103,22 @@ export function saveToAPMEFormat(unprocessed: maps.Map): Result<Blob, string> {
 
     pushU16(iter, layer.stepAreas.length);
     for (const stepArea of layer.stepAreas) {
-      pushU8(iter, stepArea.position.x);
-      pushU8(iter, stepArea.position.y);
-      pushU8(iter, stepArea.position.z);
-      pushU8(iter, stepArea.size.x);
-      pushU8(iter, stepArea.size.y);
-      pushU8(iter, stepArea.size.z);
+      pushF32(iter, stepArea.position.x);
+      pushF32(iter, stepArea.position.y);
+      pushF32(iter, stepArea.position.z);
+      pushF32(iter, stepArea.size.x);
+      pushF32(iter, stepArea.size.y);
+      pushF32(iter, stepArea.size.z);
     }
 
     pushU16(iter, layer.points.length);
     for (const point of layer.points) {
-      pushU8(iter, point.position.x);
-      pushU8(iter, point.position.y);
-      pushU8(iter, point.position.z);
-      pushU8(iter, point.size.x);
-      pushU8(iter, point.size.y);
-      pushU8(iter, point.size.z);
+      pushF32(iter, point.position.x);
+      pushF32(iter, point.position.y);
+      pushF32(iter, point.position.z);
+      pushF32(iter, point.size.x);
+      pushF32(iter, point.size.y);
+      pushF32(iter, point.size.z);
     }
 
     pushU16(iter, layer.spawns.length);
@@ -366,24 +366,24 @@ function parseLayer0(
   const stepAreaCount = view.u16();
   const stepAreas: maps.Zone[] = [];
   for (let i = 0; i < stepAreaCount; i++) {
-    const x = view.u8();
-    const y = view.u8();
-    const z = view.u8();
-    const w = view.u8();
-    const h = view.u8();
-    const d = view.u8();
+    const x = view.f32();
+    const y = view.f32();
+    const z = view.f32();
+    const w = view.f32();
+    const h = view.f32();
+    const d = view.f32();
     stepAreas.push(new maps.Zone(new Vector3(x, y, z), new Vector3(w, h, d)));
   }
 
   const pointCount = view.u16();
   const points: maps.Zone[] = [];
   for (let i = 0; i < pointCount; i++) {
-    const x = view.u8();
-    const y = view.u8();
-    const z = view.u8();
-    const w = view.u8();
-    const h = view.u8();
-    const d = view.u8();
+    const x = view.f32();
+    const y = view.f32();
+    const z = view.f32();
+    const w = view.f32();
+    const h = view.f32();
+    const d = view.f32();
     points.push(new maps.Zone(new Vector3(x, y, z), new Vector3(w, h, d)));
   }
 
