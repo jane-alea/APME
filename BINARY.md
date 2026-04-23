@@ -24,10 +24,9 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 11. 4 octets: fog far [f32]
 12. 3 octets: fog colour
 13. 3 octets: light colour
-14. 2 octets: palette count [u16]
+14. 2 octets: palette count [u16]. __If this is higher than 255, [BlockType] will mean [u16]. Otherwise, [BlockType] shall be [u8].__
 15. FOR EACH PALETTE ENTRY (note that palette entries are block IDs, which fit within 3 octets):
-    1. 2 octets: upper 2 octets of the block ID [u16]
-    2. 1 octet: lower octet of the block ID [u8]
+    1. 4 octet: block ID [u32]
 16. 2 octets: layer count [u16]
 17. FOR EACH LAYER:
     1. 4 octets: layer ID [u32]
@@ -37,33 +36,34 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
     5. 1 octet: layer mode (0 is normal, 1 is addition and 2 is exclusion)
     6. 2 octets: number of step areas [u16]
     7. FOR EACH STEP AREA:
-       1. 4 octets: X coordinate of the start of the step area [f32]
-       2. 4 octets: Y coordinate of the start of the step area [f32]
-       3. 4 octets: Z coordinate of the start of the step area [f32]
-       4. 4 octets: width of the step area [f32]
-       5. 4 octets: height of the step area [f32]
-       6. 4 octets: depth of the step area [f32]
+        1. 4 octets: X coordinate of the start of the step area [f32]
+        2. 4 octets: Y coordinate of the start of the step area [f32]
+        3. 4 octets: Z coordinate of the start of the step area [f32]
+        4. 4 octets: width of the step area [f32]
+        5. 4 octets: height of the step area [f32]
+        6. 4 octets: depth of the step area [f32]
     8. 2 octets: number of points [u16]
     9. FOR EACH POINT:
-       1. 4 octets: X coordinate of the start of the point [f32]
-       2. 4 octets: Y coordinate of the start of the point [f32]
-       3. 4 octets: Z coordinate of the start of the point [f32]
-       4. 4 octets: width of the point [f32]
-       5. 4 octets: height of the point [f32]
-       6. 4 octets: depth of the point [f32]
+        1. 4 octets: X coordinate of the start of the point [f32]
+        2. 4 octets: Y coordinate of the start of the point [f32]
+        3. 4 octets: Z coordinate of the start of the point [f32]
+        4. 4 octets: width of the point [f32]
+        5. 4 octets: height of the point [f32]
+        6. 4 octets: depth of the point [f32]
     10. 2 octets: number of spawns [u16]
     11. FOR EACH SPAWN:
-       1. 4 octets: X coordinate of the spawn [f32]
-       2. 4 octets: Y coordinate of the spawn [f32]
-       3. 4 octets: Z coordinate of the spawn [f32]
-       4. 4 octets: rotation of the spawn [f32]
-       5. 2 octets: number of dummies [u16]
-    12. FOR EACH DUMMY:
+        1. 4 octets: X coordinate of the spawn [f32]
+        2. 4 octets: Y coordinate of the spawn [f32]
+        3. 4 octets: Z coordinate of the spawn [f32]
+        4. 4 octets: rotation of the spawn [f32]
+    12. 2 octets: number of dummies [u16]
+    13. FOR EACH DUMMY:
         1. 4 octets: X coordinate of the dummy [f32]
         2. 4 octets: Y coordinate of the dummy [f32]
         3. 4 octets: Z coordinate of the dummy [f32]
-    13. CHUNKS: All chunks are sequentially encoded. A counter is started at 0. When an empty chunk is encountered, the counter is increased by one. Right before processing a non-empty chunk, as well as at the end of the procedure, or if the counter reaches `255`, if the counter is non-zero, it is pushed as a [u8], and reset to 0. When a non-empty chunk is encountered, 0 [u8] is pushed, then the chunk data is composed of the following, until all of the chunk's blocks have been run through:
-        1. 1 OR 2 octets, using the smallest size that suffices to hold the total of palette entries: block ID [u8 or u16]
-        2. 1 octet: number of consecutive identical entries, for a maximum of 255 [u8]
+    14. FOR EACH NON-EMPTY CHUNK:
+        1. 2 octets: chunk position [u16]
+        2. Run-length encoded chunk data, in the form of [BlockType] then count as [u8]
+    15. `0xDEAD`, an invalid chunk address, to mark the end of chunks [u16]
 18. 2 octets: max history entries [u16]
 19. 2 octets: history entries [u16]
