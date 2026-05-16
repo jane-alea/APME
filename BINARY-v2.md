@@ -1,0 +1,80 @@
+# This documents the APME binary format with `version = 2`
+Changes from V1:  
+- added map stats (elapsed time, blocks changed, total actions)
+- added map metadata (authors)
+
+# Format notes
+
+## Number format
+
+- All numbers are encoded in little endian
+- Number formats are specified between brackets. The formats follow the same principle as the Rust programming language's basic number types: a prefix (`i` means signed integer, `u` means unsigned integer, and `f` an IEEE 754 floating-point number) followed by a number suffix indicating its size in bits. Thus, `i32` is a signed 32-bit integer and `f64` is equivalent to the default JavaScript number type.
+
+## Colour format
+
+The only colours used in Protox maps lack an alpha channel, and use eight bits for the three other channels. Hence, colours in this binary format shall be represented by three consecutive octets: one for the red value, one for the green value and one for the blue value.
+
+# Listing
+
+1. First 4 octets: the "magic number" `APME`, in ASCII encoding, or `41 50 4d 45`
+2. 1 octet: map version
+3. 2 octets: map name octet length [u16]
+4. UTF-8 encoded map name
+5. 3 octets: skybox top colour
+6. 3 octets: skybox middle colour
+7. 3 octets: skybox bottom colour
+8. 2 octets: skybox offset [i16]
+9. 1 octet: whether the fog is enabled (0 is `false`, anything else is `true`)
+10. 4 octets: fog near [f32]
+11. 4 octets: fog far [f32]
+12. 3 octets: fog colour
+13. 3 octets: light colour
+14. 2 octets: palette count [u16]. __If this is higher than 255, [BlockType] will mean [u16]. Otherwise, [BlockType] shall be [u8].__
+15. FOR EACH PALETTE ENTRY (note that palette entries are block IDs, which fit within 3 octets):
+    1. 4 octet: block ID [u32]
+16. 8 octets: elapsed time, in milliseconds [u64]
+17. 8 octets: total blocks changed [u64]
+18. 4 octets: total actions [u32]
+19. 2 octets: author count [u16]
+20. FOR EACH AUTHOR:
+    1. UTF-8 encoded author name
+21. 2 octets: layer count [u16]
+22. FOR EACH LAYER:
+    1. 4 octets: layer ID [u32]
+    2. 2 octets: layer name length [u16]
+    3. UTF-8 encoded layer name
+    4. 1 octet: whether this layer is active (0 is `false`, anything else is `true`)
+    5. 1 octet: layer mode (0 is normal, 1 is addition and 2 is exclusion)
+    6. 2 octets: number of step areas [u16]
+    7. FOR EACH STEP AREA:
+        1. 4 octets: X coordinate of the start of the step area [f32]
+        2. 4 octets: Y coordinate of the start of the step area [f32]
+        3. 4 octets: Z coordinate of the start of the step area [f32]
+        4. 4 octets: width of the step area [f32]
+        5. 4 octets: height of the step area [f32]
+        6. 4 octets: depth of the step area [f32]
+    8. 2 octets: number of points [u16]
+    9. FOR EACH POINT:
+        1. 4 octets: X coordinate of the start of the point [f32]
+        2. 4 octets: Y coordinate of the start of the point [f32]
+        3. 4 octets: Z coordinate of the start of the point [f32]
+        4. 4 octets: width of the point [f32]
+        5. 4 octets: height of the point [f32]
+        6. 4 octets: depth of the point [f32]
+    10. 2 octets: number of spawns [u16]
+    11. FOR EACH SPAWN:
+        1. 4 octets: X coordinate of the spawn [f32]
+        2. 4 octets: Y coordinate of the spawn [f32]
+        3. 4 octets: Z coordinate of the spawn [f32]
+        4. 4 octets: rotation of the spawn [f32]
+    12. 2 octets: number of dummies [u16]
+    13. FOR EACH DUMMY:
+        1. 4 octets: X coordinate of the dummy [f32]
+        2. 4 octets: Y coordinate of the dummy [f32]
+        3. 4 octets: Z coordinate of the dummy [f32]
+    14. FOR EACH NON-EMPTY CHUNK:
+        1. 2 octets: chunk position [u16]
+        2. Run-length encoded chunk data, in the form of [BlockType] then count as [u8]
+    15. `0xDEAD`, an invalid chunk address, to mark the end of chunks [u16]
+23. 2 octets: max history entries [u16]
+24. 2 octets: history entries [u16]
