@@ -27,8 +27,14 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 14. 2 octets: palette count [u16]. __If this is higher than 255, [BlockType] will mean [u16]. Otherwise, [BlockType] shall be [u8].__
 15. FOR EACH PALETTE ENTRY (note that palette entries are block IDs, which fit within 3 octets):
     1. 4 octet: block ID [u32]
-16. 2 octets: layer count [u16]
-17. FOR EACH LAYER:
+16. 8 octets: elapsed time, in milliseconds [u64]
+17. 8 octets: total blocks changed [u64]
+18. 4 octets: total actions [u32]
+19. 2 octets: author count [u16]
+20. FOR EACH AUTHOR:
+    1. UTF-8 encoded author name
+21. 2 octets: layer count [u16]
+22. FOR EACH LAYER:
     1. 4 octets: layer ID [u32]
     2. 2 octets: layer name length [u16]
     3. UTF-8 encoded layer name
@@ -65,5 +71,5 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
         1. 2 octets: chunk position [u16]
         2. Run-length encoded chunk data, in the form of [BlockType] then count as [u8]
     15. `0xDEAD`, an invalid chunk address, to mark the end of chunks [u16]
-18. 2 octets: max history entries [u16]
-19. 2 octets: history entries [u16]
+23. 2 octets: max history entries [u16]
+24. 2 octets: history entries [u16]
