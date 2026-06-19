@@ -78,7 +78,7 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
         2. Run-length encoded chunk data, in the form of [BlockType] then count as [u8]
     15. `0xDEAD`, an invalid chunk address, to mark the end of chunks [u16]
 23. 2 octets: max history entries; if zero, then the true value is Infinity [u16]
-24. 2 octets: history entries [u16]
+24. 4 octets: history entries [u32]
 25. FOR EACH HISTORY ENTRY:
     1. 1 octet: action type [u8]
     2. Action-dependent parsing, see below
