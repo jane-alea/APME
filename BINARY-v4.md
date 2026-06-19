@@ -1,4 +1,4 @@
-# This documents the APME binary format with `version = 3`
+# This documents the APME binary format with `version = 4`
 Changes from V3:  
 - dummy count u16 => u32
 - spawn count u16 => u32
