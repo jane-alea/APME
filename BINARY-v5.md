@@ -80,7 +80,7 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 23. 2 octets: max history entries; if zero, then the true value is Infinity [u16]
 24. 4 octets: history entries [u32]
 25. FOR EACH HISTORY ENTRY:
-    1. 8 octets: UNIX timestamp [f64]
+    1. 8 octets: timestamp [u64]
     2. 4 octets: action ID [u32]
     3. 1 octet: action type [u8]
     4. Action-dependent parsing, see below
@@ -191,7 +191,7 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 
 ## `26`: AEditMapSetting
 1. 1 octet: map setting key (see below for list of possible values)
-2. depends on 1.
+2. Format depends on 1.; old value of that format, then new value of that format
 
 ### `0`: skyTop, `1`: skyMiddle, `2`: skyBottom, `7`: fogColor
 Value is a three-octet colour, wherein each octet represents one of the R, G, B colour channels.
