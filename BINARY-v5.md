@@ -81,7 +81,7 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 24. 8 octets: current history entry ID [f64]
 25. 4 octets: history entries [u32]
 26. FOR EACH HISTORY ENTRY:
-    1. 8 octets: timestamp [u64]
+    1. 8 octets: timestamp [f64]
     2. 4 octets: action ID [u32]
     3. 1 octet: action type [u8]
     4. Action-dependent parsing, see below
