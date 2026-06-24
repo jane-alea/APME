@@ -1,6 +1,7 @@
 # This documents the APME binary format with `version = 5`
 Changes from V4:  
 - Added history entries to the format
+- Standardized the block palette and removed the one packed in each file
 
 # Format notes
 
@@ -28,17 +29,14 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
 11. 4 octets: fog far [f32]
 12. 3 octets: fog colour
 13. 3 octets: light colour
-14. 2 octets: palette count [u16]. __If this is higher than 255, [BlockType] will mean [u16]. Otherwise, [BlockType] shall be [u8].__
-15. FOR EACH PALETTE ENTRY (note that palette entries are block IDs, which fit within 3 octets):
-    1. 4 octet: block ID [u32]
-16. 8 octets: elapsed time, in milliseconds [u64]
-17. 8 octets: total blocks changed [u64]
-18. 4 octets: total actions [u32]
-19. 2 octets: author count [u16]
-20. FOR EACH AUTHOR:
+14. 8 octets: elapsed time, in milliseconds [u64]
+15. 8 octets: total blocks changed [u64]
+16. 4 octets: total actions [u32]
+17. 2 octets: author count [u16]
+18. FOR EACH AUTHOR:
     1. UTF-8 encoded author name
-21. 2 octets: layer count [u16]
-22. FOR EACH LAYER:
+19. 2 octets: layer count [u16]
+20. FOR EACH LAYER:
     1. 4 octets: layer ID [u32]
     2. 2 octets: layer name length [u16]
     3. UTF-8 encoded layer name
@@ -75,12 +73,12 @@ The only colours used in Protox maps lack an alpha channel, and use eight bits f
         5. 4 octets: Y-axis rotation of the dummy [f32]
     14. FOR EACH NON-EMPTY CHUNK:
         1. 2 octets: chunk position [u16]
-        2. Run-length encoded chunk data, in the form of [BlockType] then count as [u8]
+        2. Run-length encoded chunk data, in the form of [u16] (versioned palette index) then count as [u8]
     15. `0xDEAD`, an invalid chunk address, to mark the end of chunks [u16]
-23. 2 octets: max history entries; if zero, then the true value is Infinity [u16]
-24. 8 octets: current history entry ID [f64]
-25. 4 octets: history entries [u32]
-26. FOR EACH HISTORY ENTRY:
+21. 2 octets: max history entries; if zero, then the true value is Infinity [u16]
+22. 8 octets: current history entry ID [f64]
+23. 4 octets: history entries [u32]
+24. FOR EACH HISTORY ENTRY:
     1. 8 octets: timestamp [u64]
     2. 4 octets: action ID [u32]
     3. 1 octet: action type [u8]
